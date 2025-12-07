@@ -86,4 +86,42 @@
   }
 
   async function copyReportToClipboard(){
-    let text=`Draft:\n${state.draft||"(none)"}\n\nTopic: ${state.topic}\nLens: ${state.lens}\nStakeholders: ${state.stakeholders.join(", ")}\nLocation: ${state.location}\nTime frame: ${state.timeframe}\nAspect: ${state.aspect}\nComplex
+    let text=`Draft:\n${state.draft||"(none)"}\n\nTopic: ${state.topic}\nLens: ${state.lens}\nStakeholders: ${state.stakeholders.join(", ")}\nLocation: ${state.location}\nTime frame: ${state.timeframe}\nAspect: ${state.aspect}\nComplexity: ${state.complexityKey ? COMPLEXITY[state.complexityKey].label : "(none)"}`;
+    await navigator.clipboard.writeText(text); alert("Report copied to clipboard!");
+  }
+
+  // ====== Navigation ======
+  function showStep(n){
+    document.querySelectorAll(".step").forEach(s=>s.classList.add("hidden"));
+    $(`step-${n}`).classList.remove("hidden");
+    updateProgress();
+  }
+
+  // ====== Event listeners ======
+  $("btnToStep2").onclick=()=>{
+    state.topic=$("topicInput").value.trim();
+    state.lens=$("lensSelect").value;
+    showStep(2); showLensGuidance();
+  };
+  $("btnBackTo1").onclick=()=>showStep(1);
+  $("btnToStep3").onclick=()=>{
+    state.stakeholders=[ $("stake1").value,$("stake2").value,$("stake3").value,$("stake4").value].filter(s=>s);
+    showStep(3);
+  };
+  $("btnBackTo2").onclick=()=>showStep(2);
+  $("btnToStep4").onclick(){ state.location=$("locationInput").value.trim(); showStep(4);}
+  $("btnBackTo3").onclick=()=>showStep(3);
+  $("btnToStep5").onclick(){ state.timeframe=$("timeInput").value.trim(); showStep(5);}
+  $("btnBackTo4").onclick=()=>showStep(4);
+  $("btnToStep6").onclick=()=>{ state.aspect=$("aspectInput").value.trim(); showStep(6); renderStems();}
+  $("btnBackTo5").onclick=()=>showStep(5);
+  $("btnToStep7").onclick=()=>{ state.draft=$("draftInput").value.trim(); showStep(7); renderComplexityButtons();}
+  $("btnBackTo6").onclick=()=>showStep(6);
+  $("btnFinish").onclick=()=>{ state.complexNote=$("complexExplain").value.trim(); showStep(8); renderReport();}
+  $("btnRestart").onclick=()=>location.reload();
+  $("btnCopy").onclick=()=>copyReportToClipboard();
+
+  // Init
+  showStep(1);
+
+})();
