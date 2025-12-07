@@ -110,11 +110,32 @@
   }
 
   // --- Report ---
-  function renderReport(){
-    $("reportDraft").innerText = state.draft || "(No draft)";
-    const reportStems = $("reportStems");
-    reportStems.innerHTML = $("stemsBox").innerHTML; // copy stems without linking progress colors
+ unction renderReport(){
+  $("reportDraft").innerText = state.draft || "(No draft)";
+
+  const comps = $("reportComponents");
+  comps.innerHTML = "";
+
+  function add(title, val){
+    comps.innerHTML += `<div><strong>${title}:</strong> ${val || "—"}</div>`;
   }
+
+  add("Topic", state.topic);
+  add("Lens", state.lens);
+  add("Stakeholders", state.stakeholders.join(", "));
+  add("Location", state.location);
+  add("Time frame", state.timeframe);
+  add("Aspect", state.aspect);
+  add("Complexity", state.complexityKey ? COMPLEXITY[state.complexityKey].label : "");
+
+  // Optionally include the student’s note about complexity
+  if(state.complexityNote){
+    comps.innerHTML += `<div><strong>Complexity Note:</strong> ${state.complexityNote}</div>`;
+  }
+
+  // Clear stems in the report
+  $("reportStems").innerHTML = "";
+}
 
   // --- Step Handling ---
   function showStep(n){ 
