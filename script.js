@@ -102,7 +102,7 @@
  //   add("Location",state.location,COLORS.location);
    // add("Time frame",state.timeframe,COLORS.timeframe);
   //  add("Aspect",state.aspect,COLORS.aspect);
-    $("reportStems").innerHTML = $("stemsBox").innerHTML;
+ //   $("reportStems").innerHTML = $("stemsBox").innerHTML;
   }
 
   function showStep(n){ document.querySelectorAll(".step").forEach(s=>s.classList.add("hidden")); $(`step-${n}`).classList.remove("hidden"); updateProgress(); if(n==6) renderStems(); if(n==7) renderComplexityButtons(); if(n==5) showAspectGuidance(); }
