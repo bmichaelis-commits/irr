@@ -8,18 +8,18 @@
 </head>
 <body>
   <main class="container">
-    <!-- Left Column: Wizard -->
+    <!-- Left Column: Wizard Steps -->
     <section id="wizard" class="wizard-column">
       <h1 class="title">IRR Research Question Builder</h1>
 
       <!-- Step 1: Topic + Lens -->
       <div class="step" id="step-1">
         <h2>Step 1 — Topic & Lens</h2>
-        <label class="label">General topic</label>
-        <input id="topicInput" class="input" placeholder="e.g., climate change, AI, teen mental health" />
+        <label>General topic</label>
+        <input id="topicInput" placeholder="e.g., climate change, AI, teen mental health" />
 
-        <label class="label">Choose a lens</label>
-        <select id="lensSelect" class="input">
+        <label>Choose a lens</label>
+        <select id="lensSelect">
           <option value="">— select a lens —</option>
           <option>Economic</option>
           <option>Scientific</option>
@@ -31,105 +31,104 @@
         </select>
 
         <div class="controls">
-          <button id="btnToStep2" class="btn primary">Next: Stakeholders</button>
+          <button id="btnToStep2">Next: Stakeholders</button>
         </div>
       </div>
 
       <!-- Step 2: Stakeholders -->
       <div class="step hidden" id="step-2">
         <h2>Step 2 — Stakeholders</h2>
-        <p class="muted">Enter up to 4 stakeholders (groups, orgs, individuals).</p>
-        <input id="stake1" class="input" placeholder="Stakeholder 1 (e.g., farmers)" />
-        <input id="stake2" class="input" placeholder="Stakeholder 2 (e.g., government agencies)" />
-        <input id="stake3" class="input" placeholder="Stakeholder 3 (optional)" />
-        <input id="stake4" class="input" placeholder="Stakeholder 4 (optional)" />
+        <p class="muted">Enter up to 4 stakeholders.</p>
+        <input id="stake1" placeholder="Stakeholder 1 (e.g., farmers)" />
+        <input id="stake2" placeholder="Stakeholder 2 (e.g., government agencies)" />
+        <input id="stake3" placeholder="Stakeholder 3 (optional)" />
+        <input id="stake4" placeholder="Stakeholder 4 (optional)" />
         <div class="controls">
-          <button id="btnBackTo1" class="btn">Back</button>
-          <button id="btnToStep3" class="btn primary">Next: Location</button>
+          <button id="btnBackTo1">Back</button>
+          <button id="btnToStep3">Next: Location</button>
         </div>
       </div>
 
       <!-- Step 3: Location -->
       <div class="step hidden" id="step-3">
         <h2>Step 3 — Location</h2>
-        <input id="locationInput" class="input" placeholder="City, region, country, or 'global'" />
+        <input id="locationInput" placeholder="City, region, country, or 'global'" />
         <div class="controls">
-          <button id="btnBackTo2" class="btn">Back</button>
-          <button id="btnToStep4" class="btn primary">Next: Time Frame</button>
+          <button id="btnBackTo2">Back</button>
+          <button id="btnToStep4">Next: Time Frame</button>
         </div>
       </div>
 
       <!-- Step 4: Time Frame -->
       <div class="step hidden" id="step-4">
         <h2>Step 4 — Time Frame</h2>
-        <input id="timeInput" class="input" placeholder="e.g., last 10 years, since 2010, 1990–2000" />
+        <input id="timeInput" placeholder="e.g., last 10 years, since 2010, 1990–2000" />
         <div class="controls">
-          <button id="btnBackTo3" class="btn">Back</button>
-          <button id="btnToStep5" class="btn primary">Next: Aspect</button>
+          <button id="btnBackTo3">Back</button>
+          <button id="btnToStep5">Next: Aspect</button>
         </div>
       </div>
 
       <!-- Step 5: Aspect -->
       <div class="step hidden" id="step-5">
         <h2>Step 5 — Aspect of the problem</h2>
-        <textarea id="aspectInput" class="textarea" placeholder="Describe the specific aspect you want to investigate"></textarea>
-        <div id="aspectGuidance" class="guidance-card" aria-live="polite"></div>
+        <textarea id="aspectInput" placeholder="Describe the specific aspect you want to investigate"></textarea>
+        <div id="aspectGuidance" class="guidance-card"></div>
         <div class="controls">
-          <button id="btnBackTo4" class="btn">Back</button>
-          <button id="btnToStep6" class="btn primary">Next: Draft question</button>
+          <button id="btnBackTo4">Back</button>
+          <button id="btnToStep6">Next: Draft question</button>
         </div>
       </div>
 
-      <!-- Step 6: Draft Question + Stems -->
+      <!-- Step 6: Draft Question -->
       <div class="step hidden" id="step-6">
         <h2>Step 6 — Draft your research question</h2>
-        <textarea id="draftInput" class="textarea" placeholder="Write your first-draft research question here"></textarea>
-        <div id="stemsBox" class="stems-card" aria-live="polite"></div>
+        <textarea id="draftInput" placeholder="Write your first-draft research question here"></textarea>
+        <div id="stemsBox" class="stems-card"></div>
         <div class="controls">
-          <button id="btnBackTo5" class="btn">Back</button>
-          <button id="btnToStep7" class="btn primary">Next: Complexity</button>
+          <button id="btnBackTo5">Back</button>
+          <button id="btnToStep7">Next: Complexity</button>
         </div>
       </div>
 
       <!-- Step 7: Complexity -->
       <div class="step hidden" id="step-7">
         <h2>Step 7 — Complexity</h2>
-        <p class="muted">Choose the type of complexity your investigation will explore (select only one).</p>
+        <p class="muted">Select one type of complexity.</p>
         <div id="complexButtons" class="btn-row"></div>
-        <div id="complexInfo" class="guidance-card hidden" aria-live="polite"></div>
-        <label class="label">Briefly explain the complexity (1–3 sentences)</label>
-        <textarea id="complexExplain" class="textarea" placeholder="Explain the tension, conflicting evidence, or unintended outcome"></textarea>
+        <div id="complexInfo" class="guidance-card hidden"></div>
+        <label>Briefly explain the complexity (1–3 sentences)</label>
+        <textarea id="complexExplain" placeholder="Explain tension / conflicting evidence / unintended outcomes"></textarea>
         <div class="controls">
-          <button id="btnBackTo6" class="btn">Back</button>
-          <button id="btnFinish" class="btn primary">Finish & Show Report</button>
+          <button id="btnBackTo6">Back</button>
+          <button id="btnFinish">Finish & Show Report</button>
         </div>
       </div>
 
-      <!-- Step 8: Report -->
+      <!-- Step 8: Final Report -->
       <div class="step hidden" id="step-8">
         <h2>Report</h2>
-        <div class="report-card" id="reportCard">
-          <h3>Your draft (as written)</h3>
+        <div id="reportCard" class="report-card">
+          <h3>Your draft</h3>
           <div id="reportDraft" class="report-text"></div>
 
           <h3>Components</h3>
-          <div id="reportComponents" class="components-grid"></div>
+          <div id="reportComponents"></div>
 
-          <h3>Complexity-based suggested stems</h3>
+          <h3>Complexity prompts</h3>
           <div id="reportStems" class="stems-card"></div>
         </div>
-
         <div class="controls">
-          <button id="btnRestart" class="btn">Start over</button>
-          <button id="btnCopy" class="btn primary">Copy report to clipboard</button>
+          <button id="btnRestart">Start over</button>
+          <button id="btnCopy">Copy report to clipboard</button>
         </div>
       </div>
     </section>
 
     <!-- Right Column: Progress -->
-    <aside id="sidebar" class="progress-column">
+    <aside class="wizard-column">
       <h3>Progress</h3>
-      <div id="progressList" class="progress-list"></div>
+      <div id="progressList"></div>
     </aside>
   </main>
 
