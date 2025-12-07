@@ -64,7 +64,7 @@
     row("Location", state.location, COLORS.location);
     row("Time frame", state.timeframe, COLORS.timeframe);
     row("Aspect", state.aspect, COLORS.aspect);
-    row("Complexity", state.complexityKey ? COMPLEXITY[state.complexityKey].label : "", COLORS.complexity);
+    row("Complexity", state.complexityKey, COLORS.complexity);
   }
 
   // --- Sentence Stems ---
