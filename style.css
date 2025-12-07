@@ -11,7 +11,7 @@
   --color-location: #4ade80;
   --color-timeframe: #fb923c;
   --color-aspect: #c084fc;
-  --color-complexity: #9ca3af;  
+  --color-complexity: #ff0080;  
   --color-blank-bg: #fff7ed;
 }
 
@@ -49,7 +49,7 @@ html, body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Ver
 .blank.aspect { background: rgba(168,85,247,0.08); color: var(--color-aspect); border: 1px solid rgba(168,85,247,0.12); }
 .blank.complexity { 
   background: rgba(255, 0, 128, 0.12); /* soft pink background */
-  color: #ff0080; /* text color */
+  color: var(--color-complexity); /* text color */
   border: 1px solid rgba(255, 0, 128, 0.16); }
 
 /* Report */
@@ -96,6 +96,13 @@ html, body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Ver
 }
 #sidebar .blank.aspect {
   background-color: rgba(168,85,247,0.25);
+  width: 28px;
+  height: 16px;
+  display: inline-block;
+  border-radius: 4px;
+}
+#sidebar .blank.complexity {
+  background-color: rgba(255,0,128,0.25);
   width: 28px;
   height: 16px;
   display: inline-block;
