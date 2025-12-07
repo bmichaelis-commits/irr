@@ -1,208 +1,135 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>IRR Research Question Builder</title>
-<style>
-  /* ===== General Styles ===== */
-  html, body {margin:0; padding:0; height:100%; font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background:#f3f6fb;}
-  *{box-sizing:border-box;}
-  .container{display:flex; height:100vh;}
-  main{flex:1; padding:20px; overflow-y:auto;}
-  aside{width:300px; padding:20px; background:#fff; border-left:1px solid #ddd; overflow-y:auto;}
-  h1, h2, h3, h4{margin:0 0 10px 0;}
-  h1{font-size:24px;}
-  h2{font-size:20px;}
-  label{display:block; margin:10px 0 5px; font-weight:600;}
-  input, textarea, select{width:100%; padding:8px; margin-bottom:8px; font-size:14px; border:1px solid #ccc; border-radius:4px; font-family:inherit;}
-  textarea{resize:vertical;}
-  .btn{padding:8px 12px; border:none; cursor:pointer; font-family:inherit;}
-  .btn.primary{background:#3b82f6; color:#fff;}
-  .btn-row{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0;}
-  .hidden{display:none;}
-  .muted{color:#6b7280;}
-  .stems-card{padding:8px; border:1px dashed #ccc; background:#fff;}
-  .blank{padding:2px 6px; border-radius:4px; font-weight:600;}
-  .blank.topic{color:#6b7280;}
-  .blank.lens{color:#14b8a6;}
-  .blank.stake{color:#3b82f6;}
-  .blank.loc{color:#22c55e;}
-  .blank.time{color:#f97316;}
-  .blank.aspect{color:#a855f7;}
-  .progress-list{display:flex; flex-direction:column; gap:8px;}
-  .progress-item{display:flex; align-items:center; gap:6px;}
-  .swatch{width:18px; height:12px; display:inline-block; border-radius:3px;}
-  .topic-swatch{background:#6b7280;}
-  .lens-swatch{background:#14b8a6;}
-  .stakeholder-swatch{background:#3b82f6;}
-  .location-swatch{background:#22c55e;}
-  .timeframe-swatch{background:#f97316;}
-  .aspect-swatch{background:#a855f7;}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IRR Question Wizard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="container">
-  <main>
-    <h1>IRR Research Question Builder</h1>
+  <main class="container">
+    <!-- Left Column: Wizard -->
+    <section id="wizard" class="card">
+      <h1 class="title">IRR Research Question Builder</h1>
 
-    <!-- Steps -->
-    <div class="step" id="step-1">
-      <h2>Step 1 — Topic & Lens</h2>
-      <label>General topic</label>
-      <input id="topicInput" placeholder="e.g., climate change, AI, teen mental health">
-      <label>Choose a lens</label>
-      <select id="lensSelect">
-        <option value="">— select a lens —</option>
-        <option>Economic</option>
-        <option>Scientific</option>
-        <option>Environmental</option>
-        <option>Political</option>
-        <option>Social/Cultural</option>
-        <option>Ethical</option>
-        <option>Artistic/Philosophical</option>
-      </select>
-      <button class="btn primary" id="btnToStep2">Next</button>
-    </div>
+      <!-- Step 1: Topic + Lens -->
+      <div class="step" id="step-1">
+        <h2>Step 1 — Topic &amp; Lens</h2>
+        <label class="label">General topic</label>
+        <input id="topicInput" class="input" placeholder="e.g., climate change, AI, teen mental health" />
 
-    <div class="step hidden" id="step-2">
-      <h2>Step 2 — Stakeholders</h2>
-      <input id="stake1" placeholder="Stakeholder 1">
-      <input id="stake2" placeholder="Stakeholder 2">
-      <input id="stake3" placeholder="Stakeholder 3 (optional)">
-      <input id="stake4" placeholder="Stakeholder 4 (optional)">
-      <button class="btn" id="btnBackTo1">Back</button>
-      <button class="btn primary" id="btnToStep3">Next</button>
-    </div>
+        <label class="label">Choose a lens</label>
+        <select id="lensSelect" class="input">
+          <option value="">— select a lens —</option>
+          <option>Economic</option>
+          <option>Scientific</option>
+          <option>Environmental</option>
+          <option>Political</option>
+          <option>Social/Cultural</option>
+          <option>Ethical</option>
+          <option>Artistic/Philosophical</option>
+        </select>
 
-    <div class="step hidden" id="step-3">
-      <h2>Step 3 — Location</h2>
-      <input id="locationInput" placeholder="City, region, country, or 'global'">
-      <button class="btn" id="btnBackTo2">Back</button>
-      <button class="btn primary" id="btnToStep4">Next</button>
-    </div>
+        <div class="controls">
+          <button id="btnToStep2" class="btn primary">Next: Stakeholders</button>
+        </div>
+      </div>
 
-    <div class="step hidden" id="step-4">
-      <h2>Step 4 — Time Frame</h2>
-      <input id="timeInput" placeholder="e.g., last 10 years, since 2010, 1990–2000">
-      <button class="btn" id="btnBackTo3">Back</button>
-      <button class="btn primary" id="btnToStep5">Next</button>
-    </div>
+      <!-- Step 2: Stakeholders -->
+      <div class="step hidden" id="step-2">
+        <h2>Step 2 — Stakeholders</h2>
+        <p class="muted">Enter up to 4 stakeholders (groups, orgs, individuals).</p>
+        <input id="stake1" class="input" placeholder="Stakeholder 1 (e.g., farmers)" />
+        <input id="stake2" class="input" placeholder="Stakeholder 2 (e.g., government agencies)" />
+        <input id="stake3" class="input" placeholder="Stakeholder 3 (optional)" />
+        <input id="stake4" class="input" placeholder="Stakeholder 4 (optional)" />
+        <div class="controls">
+          <button id="btnBackTo1" class="btn">Back</button>
+          <button id="btnToStep3" class="btn primary">Next: Location</button>
+        </div>
+      </div>
 
-    <div class="step hidden" id="step-5">
-      <h2>Step 5 — Aspect</h2>
-      <textarea id="aspectInput" placeholder="Describe the specific aspect to investigate"></textarea>
-      <button class="btn" id="btnBackTo4">Back</button>
-      <button class="btn primary" id="btnToStep6">Next</button>
-    </div>
+      <!-- Step 3: Location -->
+      <div class="step hidden" id="step-3">
+        <h2>Step 3 — Location</h2>
+        <input id="locationInput" class="input" placeholder="City, region, country, or 'global'" />
+        <div class="controls">
+          <button id="btnBackTo2" class="btn">Back</button>
+          <button id="btnToStep4" class="btn primary">Next: Time Frame</button>
+        </div>
+      </div>
 
-    <div class="step hidden" id="step-6">
-      <h2>Step 6 — Draft Question</h2>
-      <textarea id="draftInput" placeholder="Write your first draft research question here"></textarea>
-      <div class="stems-card" id="stemsBox"></div>
-      <button class="btn" id="btnBackTo5">Back</button>
-      <button class="btn primary" id="btnToStep7">Next</button>
-    </div>
+      <!-- Step 4: Time Frame -->
+      <div class="step hidden" id="step-4">
+        <h2>Step 4 — Time Frame</h2>
+        <input id="timeInput" class="input" placeholder="e.g., last 10 years, since 2010, 1990–2000" />
+        <div class="controls">
+          <button id="btnBackTo3" class="btn">Back</button>
+          <button id="btnToStep5" class="btn primary">Next: Aspect</button>
+        </div>
+      </div>
 
-    <div class="step hidden" id="step-7">
-      <h2>Step 7 — Complexity</h2>
-      <div id="complexButtons" class="btn-row"></div>
-      <div class="stems-card hidden" id="complexInfo"></div>
-      <textarea id="complexExplain" placeholder="Explain the tension / unintended outcome"></textarea>
-      <button class="btn" id="btnBackTo6">Back</button>
-      <button class="btn primary" id="btnFinish">Finish & Show Report</button>
-    </div>
+      <!-- Step 5: Aspect -->
+      <div class="step hidden" id="step-5">
+        <h2>Step 5 — Aspect of the problem</h2>
+        <textarea id="aspectInput" class="textarea" placeholder="Describe the specific aspect you want to investigate"></textarea>
+        <div id="aspectGuidance" class="guidance-card" aria-live="polite"></div>
+        <div class="controls">
+          <button id="btnBackTo4" class="btn">Back</button>
+          <button id="btnToStep6" class="btn primary">Next: Draft question</button>
+        </div>
+      </div>
 
-    <div class="step hidden" id="step-8">
-      <h2>Report</h2>
-      <div id="reportDraft"></div>
-      <div id="reportComponents"></div>
-      <div id="reportStems"></div>
-      <button class="btn" id="btnRestart">Start Over</button>
-      <button class="btn primary" id="btnCopy">Copy Report</button>
-    </div>
+      <!-- Step 6: Draft Question -->
+      <div class="step hidden" id="step-6">
+        <h2>Step 6 — Draft your research question</h2>
+        <textarea id="draftInput" class="textarea" placeholder="Write your first-draft research question here (students must write this themselves)"></textarea>
+        <div id="stemsBox" class="stems-card" aria-live="polite"></div>
+        <div class="controls">
+          <button id="btnBackTo5" class="btn">Back</button>
+          <button id="btnToStep7" class="btn primary">Next: Complexity</button>
+        </div>
+      </div>
+
+      <!-- Step 7: Complexity -->
+      <div class="step hidden" id="step-7">
+        <h2>Step 7 — Complexity</h2>
+        <p class="muted">Choose the type of complexity your investigation will explore (select only one).</p>
+        <div id="complexButtons" class="btn-row"></div>
+        <div id="complexInfo" class="guidance-card hidden" aria-live="polite"></div>
+        <label class="label">Briefly explain the complexity (1–3 sentences)</label>
+        <textarea id="complexExplain" class="textarea" placeholder="Explain the tension / conflicting evidence / unintended outcome you'll explore"></textarea>
+        <div class="controls">
+          <button id="btnBackTo6" class="btn">Back</button>
+          <button id="btnFinish" class="btn primary">Finish &amp; Show Report</button>
+        </div>
+      </div>
+
+      <!-- Step 8: Final Report -->
+      <div class="step hidden" id="step-8">
+        <h2>Report</h2>
+        <div class="report-card" id="reportCard">
+          <h3>Your draft (as written)</h3>
+          <div id="reportDraft" class="report-text"></div>
+          <h3>Components</h3>
+          <div id="reportComponents" class="components-grid"></div>
+          <h3>Complexity-based suggested stems</h3>
+          <div id="reportStems" class="stems-card"></div>
+        </div>
+        <div class="controls">
+          <button id="btnRestart" class="btn">Start over</button>
+          <button id="btnCopy" class="btn primary">Copy report to clipboard</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Progress -->
+    <aside id="sidebar" class="card sticky">
+      <h3>Progress</h3>
+      <div id="progressList" class="progress-list"></div>
+    </aside>
   </main>
 
-  <aside>
-    <h3>Progress</h3>
-    <div class="progress-list" id="progressList">
-      <div class="progress-item"><span class="swatch topic-swatch"></span> Topic</div>
-      <div class="progress-item"><span class="swatch lens-swatch"></span> Lens</div>
-      <div class="progress-item"><span class="swatch stakeholder-swatch"></span> Stakeholders</div>
-      <div class="progress-item"><span class="swatch location-swatch"></span> Location</div>
-      <div class="progress-item"><span class="swatch timeframe-swatch"></span> Time Frame</div>
-      <div class="progress-item"><span class="swatch aspect-swatch"></span> Aspect</div>
-    </div>
-  </aside>
-</div>
-
-<script>
-(() => {
-const state={topic:"",lens:"",stakeholders:[],location:"",timeframe:"",aspect:"",draft:"",complexityKey:"",complexityNote:""};
-const STEM_TEMPLATES=[
-`How has <span class="blank aspect">(aspect)</span> impacted <span class="blank stake">(stakeholders)</span>?`,
-`To what extent does <span class="blank aspect">(aspect)</span> affect <span class="blank stake">(stakeholders)</span> in <span class="blank loc">(location)</span>?`,
-`How effective are responses to <span class="blank aspect">(aspect)</span> for <span class="blank stake">(stakeholders)</span> over <span class="blank time">(time frame)</span>?`
-];
-const COMPLEXITY={
-"trade-offs":{label:"Trade-offs",definition:"Choosing one option requires giving up another.",example:"Example: Economic growth vs environmental protection."},
-"competing needs":{label:"Competing needs",definition:"Different stakeholders require conflicting priorities.",example:"Example: Urban development vs green spaces."},
-"conflicting evidence":{label:"Conflicting evidence",definition:"Sources provide contradictory info.",example:"Example: Studies disagree on a drug's effectiveness."},
-"unintended consequences":{label:"Unintended consequences",definition:"Outcomes that were not planned.",example:"Example: Plastic bag bans led to more small trash bags."}
-};
-
-function $(id){return document.getElementById(id);}
-function showStep(n){for(let i=1;i<=8;i++){$(`step-${i}`).classList.add("hidden");}$(`step-${n}`).classList.remove("hidden");renderProgress();}
-function renderProgress(){
-  const list=$("progressList");
-  const vals=[state.topic,state.lens,state.stakeholders.join(", "),state.location,state.timeframe,state.aspect];
-  const swatches=["topic-swatch","lens-swatch","stakeholder-swatch","location-swatch","timeframe-swatch","aspect-swatch"];
-  list.querySelectorAll(".progress-item").forEach((el,i)=>{el.style.opacity=vals[i]?"1":"0.3";});
-}
-function renderStems(){
-  const box=$("stemsBox");
-  box.innerHTML="";
-  STEM_TEMPLATES.forEach(tpl=>{const div=document.createElement("div");div.innerHTML=tpl;div.querySelectorAll(".blank.aspect").forEach(el=>el.title=state.aspect||"(aspect)");
-  div.querySelectorAll(".blank.stake").forEach(el=>el.title=state.stakeholders.join(", ")||"(stakeholders)");
-  div.querySelectorAll(".blank.loc").forEach(el=>el.title=state.location||"(location)");
-  div.querySelectorAll(".blank.time").forEach(el=>el.title=state.timeframe||"(time frame)");box.appendChild(div);});}
-
-function renderComplexButtons(){
-  const container=$("complexButtons");
-  container.innerHTML="";
-  Object.keys(COMPLEXITY).forEach(k=>{
-    const btn=document.createElement("button");btn.className="btn";btn.textContent=COMPLEXITY[k].label;
-    btn.onclick=()=>{state.complexityKey=k;container.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));btn.classList.add("selected");
-    const info=$("complexInfo");info.classList.remove("hidden");info.textContent=`Definition: ${COMPLEXITY[k].definition}\nExample: ${COMPLEXITY[k].example}`;};
-    container.appendChild(btn);
-  });
-}
-
-function renderReport(){
-  $("reportDraft").textContent=state.draft;
-  $("reportComponents").innerHTML=`<strong>Topic:</strong> ${state.topic}<br><strong>Lens:</strong> ${state.lens}<br><strong>Stakeholders:</strong> ${state.stakeholders.join(", ")}<br><strong>Location:</strong> ${state.location}<br><strong>Time Frame:</strong> ${state.timeframe}<br><strong>Aspect:</strong> ${state.aspect}`;
-  $("reportStems").textContent=state.complexityKey?COMPLEXITY[state.complexityKey].definition+" "+COMPLEXITY[state.complexityKey].example:"";}
-function copyReport(){navigator.clipboard.writeText(`${state.draft}\nTopic:${state.topic}\nLens:${state.lens}\nStakeholders:${state.stakeholders.join(", ")}\nLocation:${state.location}\nTime Frame:${state.timeframe}\nAspect:${state.aspect}\nComplexity:${state.complexityKey||"(none)"}\nNotes:${state.complexityNote||"(none)"}`);alert("Report copied");}
-
-$("btnToStep2").onclick=()=>{state.topic=$("topicInput").value.trim();state.lens=$("lensSelect").value;if(!state.topic||!state.lens){alert("Enter topic and lens");return;}showStep(2);}
-$("btnBackTo1").onclick=()=>showStep(1);
-$("btnToStep3").onclick=()=>{state.stakeholders=[ $("stake1").value.trim(), $("stake2").value.trim(), $("stake3").value.trim(), $("stake4").value.trim()].filter(Boolean);if(!state.stakeholders.length){alert("Enter at least one stakeholder");return;}showStep(3);}
-$("btnBackTo2").onclick=()=>showStep(2);
-$("btnToStep4").onclick=()=>{state.location=$("locationInput").value.trim();if(!state.location){alert("Enter location");return;}showStep(4);}
-$("btnBackTo3").onclick=()=>showStep(3);
-$("btnToStep5").onclick=()=>{state.timeframe=$("timeInput").value.trim();if(!state.timeframe){alert("Enter time frame");return;}showStep(5);}
-$("btnBackTo4").onclick=()=>showStep(4);
-$("btnToStep6").onclick=()=>{state.aspect=$("aspectInput").value.trim();if(!state.aspect){alert("Enter aspect");return;}renderStems();showStep(6);}
-$("btnBackTo5").onclick=()=>showStep(5);
-$("btnToStep7").onclick=()=>{state.draft=$("draftInput").value.trim();if(!state.draft){alert("Enter draft");return;}renderComplexButtons();showStep(7);}
-$("btnBackTo6").onclick=()=>showStep(6);
-$("btnFinish").onclick=()=>{state.complexityNote=$("complexExplain").value.trim();if(!state.complexityKey){alert("Select complexity");return;}renderReport();showStep(8);}
-$("btnBackTo7")?.addEventListener("click",()=>showStep(7));
-$("btnRestart").onclick=()=>location.reload();
-$("btnCopy").onclick=copyReport;
-
-showStep(1);
-})();
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
