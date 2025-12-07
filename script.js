@@ -1,9 +1,4 @@
-/* IRR Question Wizard - modular single-file logic
-   Designed to be stable and easy to edit.
-*/
-
 (() => {
-  // ====== Data / guidance / config ======
   const GUIDANCE = {
     Economic: `1. Economic Lens
 What industries, markets, or sectors are affected?
@@ -52,11 +47,11 @@ Street Art → Aspect: Influence of street art on public perception of urban iss
   };
 
   const STEM_TEMPLATES = [
-    `How has <span class="blank aspect"> (aspect of problem) </span> impacted <span class="blank stake"> (stakeholders) </span>?`,
-    `To what extent does <span class="blank aspect"> (aspect of problem) </span> affect <span class="blank stake"> (stakeholders) </span> in <span class="blank loc"> (location) </span>?`,
-    `How effective are responses to <span class="blank aspect"> (aspect of problem) </span> for <span class="blank stake"> (stakeholders) </span> over <span class="blank time"> (time frame) </span>?`,
-    `What challenges do <span class="blank stake"> (stakeholders) </span> face regarding <span class="blank aspect"> (aspect of problem) </span>?`,
-    `How could changes in <span class="blank aspect"> (aspect of problem) </span> influence <span class="blank stake"> (stakeholders) </span> and their environment?`
+    `How has <span class="blank aspect"> (aspect) </span> impacted <span class="blank stake"> (stakeholders) </span>?`,
+    `To what extent does <span class="blank aspect"> (aspect) </span> affect <span class="blank stake"> (stakeholders) </span> in <span class="blank loc"> (location) </span>?`,
+    `How effective are responses to <span class="blank aspect"> (aspect) </span> for <span class="blank stake"> (stakeholders) </span> over <span class="blank time"> (time frame) </span>?`,
+    `What challenges do <span class="blank stake"> (stakeholders) </span> face regarding <span class="blank aspect"> (aspect) </span>?`,
+    `How could changes in <span class="blank aspect"> (aspect) </span> influence <span class="blank stake"> (stakeholders) </span> and their environment?`
   ];
 
   const COMPLEXITY = {
@@ -91,254 +86,113 @@ Street Art → Aspect: Influence of street art on public perception of urban iss
     aspect: "aspect-swatch"
   };
 
-  // ====== State ======
-  const state = {
-    topic: "",
-    lens: "",
-    stakeholders: [],
-    location: "",
-    timeframe: "",
-    aspect: "",
-    draft: "",
-    complexityKey: "",
-    complexityNote: ""
-  };
+  const state = { topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", complexityKey:"", complexityNote:"" };
 
-  // ====== Helpers ======
-  const $ = (id) => document.getElementById(id);
-  function safeGuidance(key) {
-    return GUIDANCE[key] || "No guidance available for this lens.";
-  }
+  const $ = id => document.getElementById(id);
+  const safeGuidance = key => GUIDANCE[key] || "No guidance available for this lens.";
 
-  // render stems into stems box with colored blanks that show current answers as tooltips
   function renderStems() {
     const stemsBox = $("stemsBox");
-    stemsBox.innerHTML = "<strong>Sentence-stem options (fill the blanks yourself)</strong><br><br>";
-    STEM_TEMPLATES.forEach((tpl) => {
-      // Build a temporary div and then color blanks and attach title
+    stemsBox.innerHTML = "<strong>Sentence-stem options</strong><br><br>";
+    STEM_TEMPLATES.forEach(tpl => {
       const wrapper = document.createElement("div");
       wrapper.className = "stem-item";
       wrapper.innerHTML = tpl;
-      // update each blank's title based on state
-      const aspectBlank = wrapper.querySelector(".blank.aspect");
-      if (aspectBlank) aspectBlank.title = state.aspect || "(aspect)";
-      const stakeBlank = wrapper.querySelector(".blank.stake");
-      if (stakeBlank) stakeBlank.title = state.stakeholders.join(", ") || "(stakeholders)";
-      const locBlank = wrapper.querySelector(".blank.loc");
-      if (locBlank) locBlank.title = state.location || "(location)";
-      const timeBlank = wrapper.querySelector(".blank.time");
-      if (timeBlank) timeBlank.title = state.timeframe || "(time frame)";
+      wrapper.querySelector(".blank.aspect")?.setAttribute("title", state.aspect||"(aspect)");
+      wrapper.querySelector(".blank.stake")?.setAttribute("title", state.stakeholders.join(", ")||"(stakeholders)");
+      wrapper.querySelector(".blank.loc")?.setAttribute("title", state.location||"(location)");
+      wrapper.querySelector(".blank.time")?.setAttribute("title", state.timeframe||"(time frame)");
       stemsBox.appendChild(wrapper);
       stemsBox.appendChild(document.createElement("br"));
     });
   }
 
-  // update right column progress with color-coded blocks + tooltips
   function updateProgress() {
     const list = $("progressList");
     list.innerHTML = "";
-
-    function makeRow(label, value, swatchClass) {
+    function makeRow(label,value,swatchClass){
       const div = document.createElement("div");
-      div.className = "report-box";
+      div.style.display="flex"; div.style.alignItems="center"; div.style.gap="6px"; 
       const sw = document.createElement("span");
-      sw.className = `legend-swatch ${swatchClass}`;
-      sw.style.marginRight = "8px";
-      div.innerHTML = `<strong>${label}:</strong> ${value || "<em>—</em>"}`;
-      div.prepend(sw);
+      sw.className=`legend-swatch ${swatchClass}`;
+      div.appendChild(sw);
+      div.innerHTML += `<strong>${label}:</strong> ${value||"—"}`;
       list.appendChild(div);
     }
-
-    makeRow("Topic", state.topic || "—", "topic-swatch");
-    makeRow("Lens", state.lens || "—", "lens-swatch");
-    makeRow("Stakeholders", (state.stakeholders.length ? state.stakeholders.join(", ") : "—"), "stakeholder-swatch");
-    makeRow("Location", state.location || "—", "location-swatch");
-    makeRow("Time frame", state.timeframe || "—", "timeframe-swatch");
-    makeRow("Aspect", state.aspect || "—", "aspect-swatch");
-    makeRow("Complexity", (state.complexityKey ? COMPLEXITY[state.complexityKey].label : "—"), "topic-swatch");
+    makeRow("Topic", state.topic, "topic-swatch");
+    makeRow("Lens", state.lens, "lens-swatch");
+    makeRow("Stakeholders", state.stakeholders.join(", "), "stakeholder-swatch");
+    makeRow("Location", state.location, "location-swatch");
+    makeRow("Time frame", state.timeframe, "timeframe-swatch");
+    makeRow("Aspect", state.aspect, "aspect-swatch");
   }
 
-  // show lens guidance safely
-  function showLensGuidance() {
-    const box = $("aspectGuidance");
-    box.innerText = safeGuidance(state.lens);
-  }
+  function showLensGuidance(){ $("aspectGuidance").innerText = safeGuidance(state.lens); }
 
-  // show complexity buttons
-  function renderComplexityButtons() {
+  function renderComplexityButtons(){
     const container = $("complexButtons");
-    container.innerHTML = "";
-    Object.keys(COMPLEXITY).forEach((k) => {
+    container.innerHTML="";
+    Object.keys(COMPLEXITY).forEach(k=>{
       const btn = document.createElement("button");
-      btn.className = "btn";
+      btn.className="btn";
       btn.innerText = COMPLEXITY[k].label;
-      btn.onclick = () => {
-        state.complexityKey = k;
-        // highlight selection visually
-        Array.from(container.children).forEach(c => c.classList.remove("selected"));
+      btn.onclick = ()=>{
+        state.complexityKey=k;
+        Array.from(container.children).forEach(c=>c.classList.remove("selected"));
         btn.classList.add("selected");
-        // show info
         const info = $("complexInfo");
         info.classList.remove("hidden");
-        info.innerHTML = `<strong>${COMPLEXITY[k].label}</strong><br>
-          <em>Definition:</em> ${COMPLEXITY[k].definition}<br>
-          <em>Example:</em> ${COMPLEXITY[k].example}`;
+        info.innerHTML=`<strong>${COMPLEXITY[k].label}</strong><br><em>Definition:</em> ${COMPLEXITY[k].definition}<br><em>Example:</em> ${COMPLEXITY[k].example}`;
       };
       container.appendChild(btn);
     });
   }
 
-  // show final report
-  function renderReport() {
-    $("reportDraft").innerText = state.draft || "(No draft entered)";
-    const comps = $("reportComponents");
-    comps.innerHTML = "";
-
-    function addComp(title, content, swatch) {
-      const row = document.createElement("div");
-      row.className = "report-box";
-      row.innerHTML = `<div style="display:flex;gap:10px;align-items:center">
-        <span class="legend-swatch ${swatch}"></span>
-        <div><strong>${title}</strong><div style="color:var(--muted)">${content || "—"}</div></div>
-      </div>`;
-      comps.appendChild(row);
+  function renderReport(){
+    $("reportDraft").innerText=state.draft||"(No draft)";
+    const comps=$("reportComponents"); comps.innerHTML="";
+    function addComp(title,content,swatch){
+      const div=document.createElement("div"); div.style.display="flex"; div.style.alignItems="center"; div.style.gap="6px";
+      const sw=document.createElement("span"); sw.className=`legend-swatch ${swatch}`;
+      div.appendChild(sw); div.innerHTML+=`<strong>${title}</strong>: ${content||"—"}`;
+      comps.appendChild(div);
     }
+    addComp("Topic", state.topic,"topic-swatch");
+    addComp("Lens", state.lens,"lens-swatch");
+    addComp("Stakeholders", state.stakeholders.join(", "),"stakeholder-swatch");
+    addComp("Location", state.location,"location-swatch");
+    addComp("Time frame", state.timeframe,"timeframe-swatch");
+    addComp("Aspect", state.aspect,"aspect-swatch");
 
-    addComp("Topic", state.topic, "topic-swatch");
-    addComp("Lens", state.lens, "lens-swatch");
-    addComp("Stakeholders", state.stakeholders.join(", "), "stakeholder-swatch");
-    addComp("Location", state.location, "location-swatch");
-    addComp("Time frame", state.timeframe, "timeframe-swatch");
-    addComp("Aspect", state.aspect, "aspect-swatch");
-
-    // complexity stems
-    const stemsBox = $("reportStems");
-    stemsBox.innerHTML = "";
-    if (state.complexityKey) {
-      const list = COMPLEXITY[state.complexityKey];
-      stemsBox.innerHTML = `<strong>${list.label} — prompts</strong><div style="margin-top:8px;color:var(--muted)">${list.definition}</div><div style="margin-top:6px;color:var(--muted)"><em>${list.example}</em></div>`;
-    } else {
-      stemsBox.innerHTML = "<em>No complexity selected.</em>";
-    }
-
+    const stemsBox=$("reportStems"); stemsBox.innerHTML="";
+    if(state.complexityKey){
+      const list=COMPLEXITY[state.complexityKey];
+      stemsBox.innerHTML=`<strong>${list.label} — prompts</strong><div style="color:var(--muted)">${list.definition}</div><div style="margin-top:6px;color:var(--muted)"><em>${list.example}</em></div>`;
+    } else stemsBox.innerHTML="<em>No complexity selected.</em>";
     updateProgress();
   }
 
-  // copy report to clipboard
-  async function copyReportToClipboard() {
-    let text = `Research question (draft):\n${state.draft || "(none)"}\n\n`;
-    text += `Topic: ${state.topic}\nLens: ${state.lens}\nStakeholders: ${state.stakeholders.join(", ")}\nLocation: ${state.location}\nTime frame: ${state.timeframe}\nAspect: ${state.aspect}\nComplexity: ${state.complexityKey ? COMPLEXITY[state.complexityKey].label : "(none)"}\nNotes: ${state.complexityNote || "(none)"}\n\nSuggested stems:\n`;
-    if (state.complexityKey) {
-      text += `${COMPLEXITY[state.complexityKey].definition}\n${COMPLEXITY[state.complexityKey].example}`;
-    } else {
-      text += STEM_TEMPLATES.join("\n");
-    }
-    try {
-      await navigator.clipboard.writeText(text);
-      alert("Report copied to clipboard.");
-    } catch (err) {
-      alert("Unable to copy — your browser might block clipboard access. You can select text in the report and copy manually.");
-    }
+  async function copyReportToClipboard(){
+    let text=`Draft: ${state.draft||"(none)"}\nTopic: ${state.topic}\nLens: ${state.lens}\nStakeholders: ${state.stakeholders.join(", ")}\nLocation: ${state.location}\nTime frame: ${state.timeframe}\nAspect: ${state.aspect}\nComplexity: ${state.complexityKey?COMPLEXITY[state.complexityKey].label:"(none)"}\n\n`;
+    if(state.complexityKey){ text+=`${COMPLEXITY[state.complexityKey].definition}\n${COMPLEXITY[state.complexityKey].example}`; }
+    else text+=STEM_TEMPLATES.join("\n");
+    try{await navigator.clipboard.writeText(text); alert("Report copied.");} catch(e){alert("Cannot copy; select manually.");}
   }
 
-  // ====== Wiring UI ======
-  function wireUI() {
-    // step navigation
-    $("btnToStep2").onclick = () => {
-      const t = $("topicInput").value.trim();
-      const l = $("lensSelect").value;
-      if (!t || !l) { alert("Enter a topic and pick a lens to proceed."); return; }
-      state.topic = t; state.lens = l;
-      showLensGuidance();
-      updateProgress();
-      showStep(2);
+  function wireUI(){
+    $("btnToStep2").onclick=()=>{
+      const t=$("topicInput").value.trim(); const l=$("lensSelect").value;
+      if(!t||!l){alert("Enter topic + lens");return;}
+      state.topic=t; state.lens=l; showLensGuidance(); updateProgress(); showStep(2);
     };
-
-    $("btnBackTo1").onclick = () => showStep(1);
-    // step2
-    $("btnToStep3").onclick = () => {
-      const s = [ $("stake1").value.trim(), $("stake2").value.trim(), $("stake3").value.trim(), $("stake4").value.trim() ].filter(Boolean);
-      if (s.length === 0) { alert("Please enter at least one stakeholder."); return; }
-      state.stakeholders = s;
-      updateProgress();
-      showStep(3);
+    $("btnBackTo1").onclick=()=>showStep(1);
+    $("btnToStep3").onclick=()=>{
+      const s=[ $("stake1").value,$("stake2").value,$("stake3").value,$("stake4").value ].filter(Boolean);
+      if(!s.length){alert("Enter at least one stakeholder");return;}
+      state.stakeholders=s; updateProgress(); showStep(3);
     };
-    $("btnBackTo2").onclick = () => showStep(2);
-
-    // step3
-    $("btnToStep4").onclick = () => {
-      const loc = $("locationInput").value.trim();
-      if (!loc) { alert("Please enter a location or focus area."); return; }
-      state.location = loc; updateProgress();
-      showStep(4);
+    $("btnBackTo2").onclick=()=>showStep(2);
+    $("btnToStep4").onclick=()=>{
+      const loc=$("locationInput").value.trim(); if(!loc){alert("Enter location");return;} state.location=loc; updateProgress(); showStep(4);
     };
-    $("btnBackTo3").onclick = () => showStep(3);
-
-    // step4
-    $("btnToStep5").onclick = () => {
-      const tf = $("timeInput").value.trim();
-      if (!tf) { alert("Please enter a time frame."); return; }
-      state.timeframe = tf; updateProgress();
-      // load lens guidance in aspect step
-      showLensGuidance();
-      showStep(5);
-    };
-    $("btnBackTo4").onclick = () => showStep(4);
-
-    // step5
-    $("btnToStep6").onclick = () => {
-      const aspect = $("aspectInput").value.trim();
-      if (!aspect) { alert("Please enter a specific aspect of the problem to focus on."); return; }
-      state.aspect = aspect; updateProgress();
-      renderStems();
-      showStep(6);
-    };
-    $("btnBackTo5").onclick = () => showStep(5);
-
-    // step6
-    $("btnToStep7").onclick = () => {
-      const d = $("draftInput").value.trim();
-      if (!d) { alert("Please write a first draft of your research question (must be your own writing)."); return; }
-      state.draft = d; updateProgress();
-      renderComplexityButtons();
-      showStep(7);
-    };
-    $("btnBackTo6").onclick = () => showStep(6);
-
-    // step7
-    $("btnFinish").onclick = () => {
-      const note = $("complexExplain").value.trim();
-      state.complexityNote = note;
-      if (!state.complexityKey) { alert("Please select a complexity type."); return; }
-      state.complexityNote = note;
-      renderReport();
-      showStep(8);
-    };
-    $("btnBackTo7").onclick = () => showStep(7);
-
-    // final buttons
-    $("btnRestart").onclick = () => location.reload();
-    $("btnCopy").onclick = copyReportToClipboard;
-  }
-
-  function showStep(n) {
-    // hide all steps (1..8)
-    for (let i=1;i<=8;i++){
-      const el = $(`step-${i}`);
-      if (el) el.classList.add("hidden");
-    }
-    const active = $(`step-${n}`);
-    if (active) active.classList.remove("hidden");
-    updateProgress();
-  }
-
-  // initial boot
-  function init() {
-    wireUI();
-    showStep(1);
-    updateProgress();
-  }
-
-  // start
-  document.addEventListener("DOMContentLoaded", init);
-})();
+    $("btnBackTo3").onclick=()=>showStep(
