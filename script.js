@@ -36,13 +36,13 @@
     location: "blank loc",
     timeframe: "blank time",
     aspect: "blank aspect",
-    complexity: "blank aspect" // reusing aspect style, can customize if needed
+    complexity: "blank complexity" // reusing aspect style, can customize if needed
   };
 
- // const state = { 
-//    topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", 
-//    complexityKey:"", complexityNote:"" 
-//  };
+ const state = { 
+    topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", 
+    complexityKey:"", complexityNote:"" 
+  };
 
   const $ = id => document.getElementById(id);
 
