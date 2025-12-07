@@ -41,12 +41,12 @@ html, body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Ver
 /* Stems */
 .stems-card { background: #ffffff; padding: 10px; font-size: 14px; }
 .blank { display: inline-block; padding: 3px 8px; border-radius: 6px; font-weight: 600; } /* slightly larger padding */
-.blank.topic { background: rgba(107,114,128,0.12); color: var(--color-topic); border: 1px solid rgba(107,114,128,0.16); }
-.blank.lens { background: rgba(20,184,166,0.12); color: var(--color-lens); border: 1px solid rgba(20,184,166,0.16); }
-.blank.stake { background: rgba(59,130,246,0.18); color: var(--color-stakeholder); border: 1px solid rgba(59,130,246,0.22); }
-.blank.loc { background: rgba(34,197,94,0.18); color: var(--color-location); border: 1px solid rgba(34,197,94,0.22); }
-.blank.time { background: rgba(249,115,22,0.16); color: var(--color-timeframe); border: 1px solid rgba(249,115,22,0.22); }
-.blank.aspect { background: rgba(168,85,247,0.16); color: var(--color-aspect); border: 1px solid rgba(168,85,247,0.22); }
+.blank.topic { background: rgba(107,114,128,0.42); color: var(--color-topic); border: 1px solid rgba(107,114,128,0.16); }
+.blank.lens { background: rgba(20,184,166,0.42); color: var(--color-lens); border: 1px solid rgba(20,184,166,0.16); }
+.blank.stake { background: rgba(59,130,246,0.48); color: var(--color-stakeholder); border: 1px solid rgba(59,130,246,0.22); }
+.blank.loc { background: rgba(34,197,94,0.48); color: var(--color-location); border: 1px solid rgba(34,197,94,0.22); }
+.blank.time { background: rgba(249,115,22,0.46); color: var(--color-timeframe); border: 1px solid rgba(249,115,22,0.22); }
+.blank.aspect { background: rgba(168,85,247,0.46); color: var(--color-aspect); border: 1px solid rgba(168,85,247,0.22); }
 
 /* Report */
 .report-card { background: #ffffff; padding: 12px; }
