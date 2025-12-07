@@ -41,14 +41,17 @@
   const state = { topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", complexityKey:"", complexityNote:"" };
   const $ = id => document.getElementById(id);
 
+  // ⚡ Progress bar shows only selected values
   function updateProgress() {
     const list = $("progressList");
     list.innerHTML = "";
+
     function row(label, value, colorClass){
       const div = document.createElement("div");
       div.innerHTML = `<span class="${colorClass}"></span> <strong>${label}:</strong> ${value || "—"}`;
       list.appendChild(div);
     }
+
     row("Topic", state.topic, COLORS.topic);
     row("Lens", state.lens, COLORS.lens);
     row("Stakeholders", state.stakeholders.join(", "), COLORS.stakeholder);
@@ -57,6 +60,7 @@
     row("Aspect", state.aspect, COLORS.aspect);
   }
 
+  // ⚡ Sentence stems only in Step 6
   function renderStems(){
     const box = $("stemsBox");
     box.innerHTML = "<strong>Sentence-stem options:</strong><br><br>";
@@ -95,25 +99,31 @@
   function renderReport(){
     $("reportDraft").innerText = state.draft || "(No draft)";
     const comps = $("reportComponents"); comps.innerHTML="";
-    function add(title,val,color){ comps.innerHTML += `<div><span class="${color}"></span><strong>${title}:</strong> ${val||"—"}</div>`; }
-  //  add("Topic",state.topic,COLORS.topic);
-  //  add("Lens",state.lens,COLORS.lens);
-  //  add("Stakeholders",state.stakeholders.join(", "),COLORS.stakeholder);
- //   add("Location",state.location,COLORS.location);
-   // add("Time frame",state.timeframe,COLORS.timeframe);
-  //  add("Aspect",state.aspect,COLORS.aspect);
- //   $("reportStems").innerHTML = $("stemsBox").innerHTML;
+    // report components rendering commented out to match previous behavior
   }
 
-  function showStep(n){ document.querySelectorAll(".step").forEach(s=>s.classList.add("hidden")); $(`step-${n}`).classList.remove("hidden"); updateProgress(); if(n==6) renderStems(); if(n==7) renderComplexityButtons(); if(n==5) showAspectGuidance(); }
+  function showStep(n){
+    document.querySelectorAll(".step").forEach(s=>s.classList.add("hidden"));
+    $(`step-${n}`).classList.remove("hidden");
+    updateProgress();
+
+    if(n==6) renderStems();           // ⚡ Only Step 6 handles stems
+    if(n==7) renderComplexityButtons();
+    if(n==5) showAspectGuidance();
+  }
 
   // Navigation
   $("btnToStep2").onclick = ()=>{ state.topic=$("topicInput").value; state.lens=$("lensSelect").value; showStep(2); };
-  $("btnBackTo1").onclick = ()=>showStep(1); $("btnToStep3").onclick = ()=>{ state.stakeholders=[ $("stake1").value,$("stake2").value,$("stake3").value,$("stake4").value].filter(Boolean); showStep(3); };
-  $("btnBackTo2").onclick = ()=>showStep(2); $("btnToStep4").onclick = ()=>{ state.location=$("locationInput").value; showStep(4); };
-  $("btnBackTo3").onclick = ()=>showStep(3); $("btnToStep5").onclick = ()=>{ state.timeframe=$("timeInput").value; showStep(5); };
-  $("btnBackTo4").onclick = ()=>showStep(4); $("btnToStep6").onclick = ()=>{ state.aspect=$("aspectInput").value; showStep(6); };
-  $("btnBackTo5").onclick = ()=>showStep(5); $("btnToStep7").onclick = ()=>{ state.draft=$("draftInput").value; showStep(7); };
+  $("btnBackTo1").onclick = ()=>showStep(1);
+  $("btnToStep3").onclick = ()=>{ state.stakeholders=[ $("stake1").value,$("stake2").value,$("stake3").value,$("stake4").value].filter(Boolean); showStep(3); };
+  $("btnBackTo2").onclick = ()=>showStep(2);
+  $("btnToStep4").onclick = ()=>{ state.location=$("locationInput").value; showStep(4); };
+  $("btnBackTo3").onclick = ()=>showStep(3);
+  $("btnToStep5").onclick = ()=>{ state.timeframe=$("timeInput").value; showStep(5); };
+  $("btnBackTo4").onclick = ()=>showStep(4);
+  $("btnToStep6").onclick = ()=>{ state.aspect=$("aspectInput").value; showStep(6); };
+  $("btnBackTo5").onclick = ()=>showStep(5);
+  $("btnToStep7").onclick = ()=>{ state.draft=$("draftInput").value; showStep(7); };
   $("btnBackTo6").onclick = ()=>showStep(6);
   $("btnFinish").onclick = ()=>{ state.complexityNote=$("complexExplain").value; showStep(8); renderReport(); };
   $("btnRestart").onclick = ()=>location.reload();
