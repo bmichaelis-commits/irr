@@ -92,12 +92,12 @@
     $("reportDraft").innerText = state.draft || "(No draft)";
     const comps = $("reportComponents"); comps.innerHTML="";
     function add(title,val,color){ comps.innerHTML += `<div><span class="${color}"></span><strong>${title}:</strong> ${val||"—"}</div>`; }
-    add("Topic",state.topic,COLORS.topic);
-    add("Lens",state.lens,COLORS.lens);
-    add("Stakeholders",state.stakeholders.join(", "),COLORS.stakeholder);
-    add("Location",state.location,COLORS.location);
-    add("Time frame",state.timeframe,COLORS.timeframe);
-    add("Aspect",state.aspect,COLORS.aspect);
+  //  add("Topic",state.topic,COLORS.topic);
+  //  add("Lens",state.lens,COLORS.lens);
+  //  add("Stakeholders",state.stakeholders.join(", "),COLORS.stakeholder);
+ //   add("Location",state.location,COLORS.location);
+   // add("Time frame",state.timeframe,COLORS.timeframe);
+  //  add("Aspect",state.aspect,COLORS.aspect);
     $("reportStems").innerHTML = $("stemsBox").innerHTML;
   }
 
