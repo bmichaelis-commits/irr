@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IRR Question Builder Wizard</title>
+<style>
+    body {
+        display: flex;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    #wizard {
+        width: 70%;
+        padding: 20px;
+    }
+    #progress {
+        width: 30%;
+        background: #f7f7f7;
+        padding: 20px;
+        border-left: 2px solid #ddd;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+    }
+    .step { margin-bottom: 30px; }
+    .hidden { display: none; }
+    .report-box {
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+    .topic { background: #E3F2FD; }
+    .lens { background: #F1F8E9; }
+    .aspect { background: #FFF3E0; }
+    .complexity { background: #FCE4EC; }
+    textarea {
+        width: 100%;
+        height: 80px;
+    }
+    .stem-box {
+        background: #fafafa;
+        border-left: 3px solid #ccc;
+        padding: 8px;
+        margin-top: 8px;
+        font-size: 0.9em;
+    }
+</style>
+</head>
+<body>
+
+<div id="wizard">
+    <h1>IRR Research Question Builder</h1>
+
+    <!-- STEP 1: GENERAL TOPIC -->
+    <div class="step" id="step1">
+        <h2>Step 1: What general topic are you interested in?</h2>
+        <input type="text" id="topicInput" />
+        <button onclick="saveTopic()">Next</button>
+    </div>
+
+    <!-- STEP 2: LENS -->
+    <div class="step hidden" id="step2">
+        <h2>Step 2: Which lens will you investigate this through?</h2>
+        <select id="lensSelect">
+            <option value="">Select a lens…</option>
+            <option value="Economic">Economic</option>
+            <option value="Scientific">Scientific</option>
+            <option value="Environmental">Environmental</option>
+            <option value="Political">Political</option>
+            <option value="Social/Cultural">Social / Cultural</option>
+            <option value="Ethical">Ethical</option>
+        </select>
+        <button onclick="saveLens()">Next</button>
+    </div>
+
+    <!-- STEP 3: SPECIFIC ASPECT (sentence stems displayed here) -->
+    <div class="step hidden" id="step3">
+        <h2>Step 3: What *specific aspect* of this topic will you investigate?</h2>
+        <textarea id="aspectInput"></textarea>
+
+        <div id="lensStems" class="stem-box hidden"></div>
+
+        <button onclick="saveAspect()">Next</button>
+    </div>
+
+    <!-- STEP 4: COMPLEXITY -->
+    <div class="step hidden" id="step4">
+        <h2>Step 4: What kind of complexity does your investigation involve?</h2>
+        <select id="complexitySelect">
+            <option value="">Choose one…</option>
+            <option value="trade-offs">Trade-offs</option>
+            <option value="competing needs">Competing Needs</option>
+            <option value="conflicting evidence">Conflicting Evidence</option>
+            <option value="unintended consequences">Unintended Consequences</option>
+        </select>
+
+        <h3>Briefly describe that complexity:</h3>
+        <textarea id="complexityExplanation"></textarea>
+
+        <button onclick="saveComplexity()">Next</button>
+    </div>
+
+    <!-- STEP 5: ENTER FINAL RESEARCH QUESTION -->
+    <div class="step hidden" id="step5">
+        <h2>Step 5: Write your current research question:</h2>
+        <textarea id="finalQuestion"></textarea>
+        <button onclick="generateReport()">Finish</button>
+    </div>
+
+    <!-- OUTPUT REPORT -->
+    <div id="report" class="hidden">
+        <h2>Your IRR Question Report</h2>
+        <h3>Your Question (as written):</h3>
+        <div class="report-box" style="background:#fff;border:1px solid #ccc;" id="rawQuestionBox"></div>
+
+        <h3>Breakdown of Components:</h3>
+        <div id="compiledReport"></div>
+
+        <h3>Suggested Next-Step Sentence Stems</h3>
+        <div id="suggestedStems"></div>
+    </div>
+</div>
+
+<!-- RIGHT-SIDE PROGRESS -->
+<div id="progress">
+    <h2>Progress</h2>
+    <div id="progressList"></div>
+</div>
+
+<script>
+let answers = {};
+
+// sentence stems by lens
+const lensStemsLibrary = {
+    "Economic": [
+        "How has ___ impacted economic growth or industry?",
+        "What are the financial implications of ___ for specific stakeholders?",
+        "How effective is current funding or investment in addressing ___?"
+    ],
+    "Scientific": [
+        "How has scientific advancement in ___ shaped the development of ___?",
+        "What technological factors influence the effectiveness of ___?",
+        "How has research evidence evolved regarding ___?"
+    ],
+    "Environmental": [
+        "What environmental impacts emerge from ___?",
+        "How has climate or ecology shaped the outcomes of ___?",
+        "What sustainability challenges relate to ___?"
+    ],
+    "Political": [
+        "How have government policies influenced ___?",
+        "What political actors or debates shape the direction of ___?",
+        "How effective is current policy in managing ___?"
+    ],
+    "Social/Cultural": [
+        "How has public perception or cultural norms shaped ___?",
+        "Which social groups are most affected by ___, and how?",
+        "How has media representation influenced the issue of ___?"
+    ],
+    "Ethical": [
+        "What ethical dilemmas arise from ___?",
+        "How do competing values shape decisions about ___?",
+        "What responsibilities do stakeholders have regarding ___?"
+    ]
+};
+
+// complexity-specific stems for the end report
+const complexityStems = {
+    "trade-offs": [
+        "What trade-offs must stakeholders consider when addressing ___?",
+        "How does improving one part of the issue worsen another?"
+    ],
+    "competing needs": [
+        "Which stakeholders’ needs come into conflict, and why?",
+        "How do resource limitations create tensions between groups?"
+    ],
+    "conflicting evidence": [
+        "Why do credible sources disagree about ___?",
+        "How do methodological differences shape these conclusions?"
+    ],
+    "unintended consequences": [
+        "What unexpected outcomes have emerged from attempts to address ___?",
+        "How do hidden downstream effects complicate current solutions?"
+    ]
+};
+
+function addProgress(label, value) {
+    const box = document.createElement("div");
+    box.className = "report-box";
+    box.innerHTML = `<strong>${label}:</strong> ${value}`;
+    document.getElementById("progressList").appendChild(box);
+}
+
+/* STEP SAVERS */
+function saveTopic() {
+    const val = document.getElementById("topicInput").value.trim();
+    if (!val) return;
+    answers.topic = val;
+    addProgress("Topic", val);
+    document.getElementById("step1").classList.add("hidden");
+    document.getElementById("step2").classList.remove("hidden");
+}
+
+function saveLens() {
+    const val = document.getElementById("lensSelect").value;
+    if (!val) return;
+    answers.lens = val;
+    addProgress("Lens", val);
+
+    // display lens stems in Step 3
+    const stemsDiv = document.getElementById("lensStems");
+    stemsDiv.innerHTML = "<strong>Helpful sentence stems for this lens:</strong><br>" +
+        lensStemsLibrary[val].map(s => `<div>• ${s}</div>`).join("");
+    stemsDiv.classList.remove("hidden");
+
+    document.getElementById("step2").classList.add("hidden");
+    document.getElementById("step3").classList.remove("hidden");
+}
+
+function saveAspect() {
+    const val = document.getElementById("aspectInput").value.trim();
+    if (!val) return;
+    answers.aspect = val;
+    addProgress("Specific Aspect", val);
+    document.getElementById("step3").classList.add("hidden");
+    document.getElementById("step4").classList.remove("hidden");
+}
+
+function saveComplexity() {
+    const type = document.getElementById("complexitySelect").value;
+    const desc = document.getElementById("complexityExplanation").value.trim();
+    if (!type) return;
+
+    answers.complexityType = type;
+    answers.complexityDescription = desc || "(no description provided)";
+    addProgress("Complexity", type);
+
+    document.getElementById("step4").classList.add("hidden");
+    document.getElementById("step5").classList.remove("hidden");
+}
+
+function generateReport() {
+    answers.finalQuestion = document.getElementById("finalQuestion").value.trim();
+
+    document.getElementById("rawQuestionBox").innerText =
+        answers.finalQuestion || "(You did not enter a question.)";
+
+    // Build breakdown
+    const compiled = `
+        <div class="report-box topic"><strong>Topic:</strong> ${answers.topic}</div>
+        <div class="report-box lens"><strong>Lens:</strong> ${answers.lens}</div>
+        <div class="report-box aspect"><strong>Specific Aspect:</strong> ${answers.aspect}</div>
+        <div class="report-box complexity"><strong>Complexity:</strong> ${answers.complexityType}<br>${answers.complexityDescription}</div>
+    `;
+    document.getElementById("compiledReport").innerHTML = compiled;
+
+    // Complexity stems tailored to their selection
+    const stemList = complexityStems[answers.complexityType]
+        .map(s => `<div>• ${s.replace("___", answers.topic)}</div>`)
+        .join("");
+
+    document.getElementById("suggestedStems").innerHTML = stemList;
+
+    document.getElementById("step5").classList.add("hidden");
+    document.getElementById("report").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
+
+
