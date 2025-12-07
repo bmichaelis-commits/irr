@@ -15,14 +15,18 @@
     `How effective are responses to <span class="blank aspect">(aspect)</span> for <span class="blank stake">(stakeholders)</span> over <span class="blank time">(time frame)</span>?`,
     `What challenges do <span class="blank stake">(stakeholders)</span> face regarding <span class="blank aspect">(aspect)</span>?`,
     `How could changes in <span class="blank aspect">(aspect)</span> influence <span class="blank stake">(stakeholders)</span> and their environment?`,
-    `What policies or actions could best address <span class="blank aspect">(aspect)</span> for <span class="blank stake">(stakeholders)</span>?`
+    `How could (policy or action) address <span class="blank aspect">(aspect)</span> for <span class="blank stake">(stakeholders)</span>?`
   ];
 
   const COMPLEXITY = {
-    "trade-offs": { label: "Trade-offs", definition: "Choosing one option requires giving up another.", example: "Choosing economic growth vs environmental protection." },
-    "competing needs": { label: "Competing needs", definition: "Different stakeholders require conflicting resources or priorities.", example: "Balancing urban development with green space preservation." },
-    "conflicting evidence": { label: "Conflicting evidence", definition: "Sources provide contradictory information or interpretations.", example: "Studies disagree on the effectiveness of a new drug." },
-    "unintended consequences": { label: "Unintended consequences", definition: "Outcomes happen as a result of an action but were not predicted.", example: "Plastic bag bans led to increased purchase of small trash bags." }
+    "trade-offs": { label: "Trade-offs", definition: "Choosing one option requires giving up another.", 
+                   example: "Choosing economic growth vs environmental protection." },
+    "competing needs": { label: "Competing Needs", definition: "Different stakeholders require conflicting resources or priorities.", 
+                        example: "Balancing urban development with green space preservation." },
+    "conflicting evidence": { label: "Conflicting Evidence", definition: "Sources provide contradictory information or interpretations.", 
+                             example: "Studies disagree on the effectiveness of a new drug." },
+    "unintended consequences": { label: "Unintended Consequences", definition: "Outcomes happen as a result of an action but were not predicted.", 
+                                example: "Plastic bag bans led to increased purchase of small trash bags." }
   };
 
   const COLORS = {
