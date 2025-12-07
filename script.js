@@ -3,6 +3,7 @@
     Economic: `What industries, markets, or sectors are affected?\nWhat specific economic policy or regulation could you investigate?\nExample: Climate Change → Economic costs of rising sea levels on coastal cities`,
     Scientific: `What scientific discoveries or innovations could you focus on?\nIs there a gap, controversy, or emerging technology?\nExample: AI → Accuracy of facial recognition algorithms for different populations`,
     Environmental: `What natural processes or human activity could you focus on?\nAre there policies, behaviors, or technologies addressing this?\nExample: Water Pollution → Impact of agricultural runoff on freshwater ecosystems`,
+    Futuristic: `What predicted impacts or long-term consequences could you investigate?\nHow might trends today shape future outcomes?\nExample: AI adoption → Predicted effects on employment in the next 20 years`,
     Political: `Is there a policy, law, or program you could focus on?\nIs there a political actor or conflict?\nExample: Immigration → Effectiveness of a visa policy`,
     "Social/Cultural": `Is there a community or groups most affected or underrepresented?\nAre there cultural conflicts or changes in practices?\nExample: Technology → How social media affects teenagers’ mental health`,
     Ethical: `Who is responsible for action?\nAre there competing rights or controversial outcomes?\nExample: AI → Ethical concerns of autonomous vehicles`,
