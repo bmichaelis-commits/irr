@@ -36,10 +36,10 @@
     location: "blank loc",
     timeframe: "blank time",
     aspect: "blank aspect",
-    complexity: "blank complexity" // reusing aspect style, can customize if needed
+    complexity: "blank complexity"
   };
 
- const state = { 
+  const state = { 
     topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", 
     complexityKey:"", complexityNote:"" 
   };
@@ -63,7 +63,13 @@
     row("Location", state.location, COLORS.location);
     row("Time frame", state.timeframe, COLORS.timeframe);
     row("Aspect", state.aspect, COLORS.aspect);
-    row("Complexity", state.complexity, COLORS.complexity);
+    // Complexity row now includes student explanation
+    row("Complexity", 
+        state.complexityKey 
+          ? `${COMPLEXITY[state.complexityKey].label}${state.complexityNote ? " — " + state.complexityNote : ""}` 
+          : "", 
+        COLORS.complexity
+    );
   }
 
   // --- Sentence Stems ---
@@ -108,32 +114,12 @@
   }
 
   // --- Report ---
- function renderReport(){
-  $("reportDraft").innerText = state.draft || "(No draft)";
-
-  const comps = $("reportComponents");
-  comps.innerHTML = "";
-
-  function add(title, val){
-    comps.innerHTML += `<div><strong>${title}:</strong> ${val || "—"}</div>`;
+  function renderReport(){
+    $("reportDraft").innerText = state.draft || "(No draft)";
+    const comps = $("reportComponents");
+    if(comps) comps.innerHTML = "";
+    $("reportStems").innerHTML = "";
   }
-
-  add("Topic", state.topic);
-  add("Lens", state.lens);
-  add("Stakeholders", state.stakeholders.join(", "));
-  add("Location", state.location);
-  add("Time frame", state.timeframe);
-  add("Aspect", state.aspect);
-  add("Complexity", state.complexityKey ? COMPLEXITY[state.complexityKey].label : "");
-
-  // Optionally include the student’s note about complexity
-  if(state.complexityNote){
-    comps.innerHTML += `<div><strong>Complexity Note:</strong> ${state.complexityNote}</div>`;
-  }
-
-  // Clear stems in the report
-  $("reportStems").innerHTML = "";
-}
 
   // --- Step Handling ---
   function showStep(n){ 
@@ -188,9 +174,17 @@
     showStep(8); 
     renderReport(); 
   };
+
+  // --- New Back button from Report to Complexity ---
+  $("btnBackTo7").onclick = ()=>showStep(7);
+
   $("btnRestart").onclick = ()=>location.reload();
+
+  // --- Copy button now includes progress ---
   $("btnCopy").onclick = ()=>{
-    navigator.clipboard.writeText(document.getElementById("reportCard").innerText);
+    const reportText = $("reportCard").innerText;
+    const progressText = $("progressList").innerText;
+    navigator.clipboard.writeText(`${reportText}\n\nProgress:\n${progressText}`);
     alert("Copied to clipboard!");
   };
 
