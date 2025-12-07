@@ -35,7 +35,8 @@
     stakeholder: "blank stake",
     location: "blank loc",
     timeframe: "blank time",
-    aspect: "blank aspect"
+    aspect: "blank aspect",
+    complexity: "blank complexity"
   };
 
   const state = { topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", complexityKey:"", complexityNote:"" };
@@ -58,6 +59,7 @@
     row("Location", state.location, COLORS.location);
     row("Time frame", state.timeframe, COLORS.timeframe);
     row("Aspect", state.aspect, COLORS.aspect);
+    row("Complexity", state.complexityKey ? COMPLEXITY[state.complexityKey].label : "", COLORS.complexity); // new
   }
 
   // ⚡ Sentence stems only in Step 6
