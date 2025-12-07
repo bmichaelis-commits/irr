@@ -108,7 +108,7 @@
   }
 
   // --- Report ---
- unction renderReport(){
+ function renderReport(){
   $("reportDraft").innerText = state.draft || "(No draft)";
 
   const comps = $("reportComponents");
