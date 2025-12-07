@@ -11,7 +11,7 @@
   --color-location: #4ade80;
   --color-timeframe: #fb923c;
   --color-aspect: #c084fc;
-  --color-complexity: #ff0080;  
+  --color-complexity: #DC143C;  
   --color-blank-bg: #fff7ed;
 }
 
@@ -47,10 +47,7 @@ html, body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Ver
 .blank.loc { background: rgba(34,197,94,0.12); color: var(--color-location); border: 1px solid rgba(34,197,94,0.16); }
 .blank.time { background: rgba(249,115,22,0.08); color: var(--color-timeframe); border: 1px solid rgba(249,115,22,0.12); }
 .blank.aspect { background: rgba(168,85,247,0.08); color: var(--color-aspect); border: 1px solid rgba(168,85,247,0.12); }
-.blank.complexity { 
-  background: rgba(255, 64, 64, 0.25); /* soft pink background */
-  color: var(--color-complexity); /* text color */
-  border: 1px solid rgba(255, 0, 128, 0.16); }
+.blank.complexity { background: rgba(255, 64, 64, 0.25); color: var(--color-complexity); border: 1px solid rgba(255, 0, 128, 0.16); }
 
 /* Report */
 .report-card { background: #ffffff; padding: 12px; }
