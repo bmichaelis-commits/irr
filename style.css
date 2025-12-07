@@ -53,6 +53,20 @@ html, body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Ver
 .components-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 6px; }
 .progress-list { display: flex; flex-direction: column; gap: 8px; }
 
+/* Progress color swatches - brighter and slightly bigger */
+.legend-swatch {
+  width: 22px;    /* slightly bigger */
+  height: 14px;   /* slightly bigger */
+  border-radius: 4px;
+  display: inline-block;
+}
+.legend-topic { background-color: #a3a9b4; }
+.legend-lens { background-color: #38e2cc; }
+.legend-stake { background-color: #72b5ff; }
+.legend-loc { background-color: #5ade88; }
+.legend-time { background-color: #ffb347; }
+.legend-aspect { background-color: #d191ff; }
+
 /* Sidebar */
 #sidebar { width: 50%; }
 #wizard { width: 50%; }
