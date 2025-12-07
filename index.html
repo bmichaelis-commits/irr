@@ -72,9 +72,7 @@
       <div class="step hidden" id="step-5">
         <h2>Step 5 — Aspect of the problem</h2>
         <textarea id="aspectInput" class="textarea" placeholder="Describe the specific aspect you want to investigate"></textarea>
-
         <div id="aspectGuidance" class="guidance-card" aria-live="polite"></div>
-
         <div class="controls">
           <button id="btnBackTo4" class="btn">Back</button>
           <button id="btnToStep6" class="btn primary">Next: Draft question</button>
@@ -84,28 +82,22 @@
       <!-- Step 6: Draft Question + stems (colored blanks) -->
       <div class="step hidden" id="step-6">
         <h2>Step 6 — Draft your research question</h2>
-        <textarea id="draftInput" class="textarea" placeholder="Write your first-draft research question here (teachers: students must write this themselves)"></textarea>
-
+        <textarea id="draftInput" class="textarea" placeholder="Write your first-draft research question here"></textarea>
         <div id="stemsBox" class="stems-card" aria-live="polite"></div>
-
         <div class="controls">
           <button id="btnBackTo5" class="btn">Back</button>
           <button id="btnToStep7" class="btn primary">Next: Complexity</button>
         </div>
       </div>
 
-      <!-- Step 7: Complexity buttons with definition + example -->
+      <!-- Step 7: Complexity -->
       <div class="step hidden" id="step-7">
         <h2>Step 7 — Complexity</h2>
-        <p class="muted">Choose the type of complexity your investigation will explore (select only one).</p>
-
+        <p class="muted">Choose the type of complexity (select only one).</p>
         <div id="complexButtons" class="btn-row"></div>
-
         <div id="complexInfo" class="guidance-card hidden" aria-live="polite"></div>
-
         <label class="label">Briefly explain the complexity (1–3 sentences)</label>
         <textarea id="complexExplain" class="textarea" placeholder="Explain the tension / conflicting evidence / unintended outcome you'll explore"></textarea>
-
         <div class="controls">
           <button id="btnBackTo6" class="btn">Back</button>
           <button id="btnFinish" class="btn primary">Finish &amp; Show Report</button>
@@ -118,14 +110,11 @@
         <div class="report-card" id="reportCard">
           <h3>Your draft (as written)</h3>
           <div id="reportDraft" class="report-text"></div>
-
           <h3>Components</h3>
           <div id="reportComponents" class="components-grid"></div>
-
           <h3>Complexity-based suggested stems</h3>
           <div id="reportStems" class="stems-card"></div>
         </div>
-
         <div class="controls">
           <button id="btnRestart" class="btn">Start over</button>
           <button id="btnCopy" class="btn primary">Copy report to clipboard</button>
@@ -133,13 +122,11 @@
       </div>
     </section>
 
-    <!-- Right column: progress / color legend -->
-  <!-- Right column: progress -->
-<aside id="sidebar" class="card sticky">
-  <h3>Progress</h3>
-  <div id="progressList" class="progress-list"></div>
-</aside>
-
+    <!-- Right column: progress -->
+    <aside id="sidebar" class="card sticky">
+      <h3>Progress</h3>
+      <div id="progressList" class="progress-list"></div>
+    </aside>
   </main>
 
   <script src="script.js"></script>
