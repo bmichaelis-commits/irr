@@ -29,6 +29,7 @@
                                 example: "Plastic bag bans led to increased purchase of small trash bags." }
   };
 
+  // Add a color class for complexity swatch
   const COLORS = {
     topic: "blank topic",
     lens: "blank lens",
@@ -36,20 +37,24 @@
     location: "blank loc",
     timeframe: "blank time",
     aspect: "blank aspect",
-    complexity: "blank complexity"
+    complexity: "blank aspect" // reusing aspect style, can customize if needed
   };
 
-  const state = { topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", complexityKey:"", complexityNote:"" };
+  const state = { 
+    topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", 
+    complexityKey:"", complexityNote:"" 
+  };
+
   const $ = id => document.getElementById(id);
 
-  // ⚡ Progress bar shows only selected values
+  // --- Progress Sidebar ---
   function updateProgress() {
     const list = $("progressList");
     list.innerHTML = "";
 
     function row(label, value, colorClass){
       const div = document.createElement("div");
-      div.innerHTML = `<span class="${colorClass}"></span> <strong>${label}:</strong> ${value || "—"}`;
+      div.innerHTML = `<span class="${colorClass}" style="width:20px;height:14px;display:inline-block;margin-right:6px;border-radius:3px;"></span> <strong>${label}:</strong> ${value || "—"}`;
       list.appendChild(div);
     }
 
@@ -59,10 +64,10 @@
     row("Location", state.location, COLORS.location);
     row("Time frame", state.timeframe, COLORS.timeframe);
     row("Aspect", state.aspect, COLORS.aspect);
-    row("Complexity", state.complexityKey ? COMPLEXITY[state.complexityKey].label : "", COLORS.complexity); // new
+    row("Complexity", state.complexityKey ? COMPLEXITY[state.complexityKey].label : "", COLORS.complexity);
   }
 
-  // ⚡ Sentence stems only in Step 6
+  // --- Sentence Stems ---
   function renderStems(){
     const box = $("stemsBox");
     box.innerHTML = "<strong>Sentence-stem options:</strong><br><br>";
@@ -77,15 +82,19 @@
     });
   }
 
+  // --- Aspect Guidance ---
   function showAspectGuidance(){
     $("aspectGuidance").innerText = GUIDANCE[state.lens] || "";
   }
 
+  // --- Complexity Buttons ---
   function renderComplexityButtons(){
-    const container = $("complexButtons"); container.innerHTML="";
+    const container = $("complexButtons"); 
+    container.innerHTML="";
     Object.keys(COMPLEXITY).forEach(k=>{
       const btn = document.createElement("button");
-      btn.className="btn"; btn.innerText = COMPLEXITY[k].label;
+      btn.className="btn"; 
+      btn.innerText = COMPLEXITY[k].label;
       btn.onclick = ()=>{
         state.complexityKey = k;
         container.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
@@ -93,41 +102,72 @@
         const info = $("complexInfo");
         info.classList.remove("hidden");
         info.innerHTML = `<strong>${COMPLEXITY[k].label}</strong><br><em>Definition:</em> ${COMPLEXITY[k].definition}<br><em>Example:</em> ${COMPLEXITY[k].example}`;
+        updateProgress(); // <-- update sidebar immediately
       };
       container.appendChild(btn);
     });
   }
 
+  // --- Report ---
   function renderReport(){
     $("reportDraft").innerText = state.draft || "(No draft)";
-    const comps = $("reportComponents"); comps.innerHTML="";
-    // report components rendering commented out to match previous behavior
+    const reportStems = $("reportStems");
+    reportStems.innerHTML = $("stemsBox").innerHTML; // copy stems without linking progress colors
   }
 
-  function showStep(n){
-    document.querySelectorAll(".step").forEach(s=>s.classList.add("hidden"));
-    $(`step-${n}`).classList.remove("hidden");
-    updateProgress();
-
-    if(n==6) renderStems();           // ⚡ Only Step 6 handles stems
-    if(n==7) renderComplexityButtons();
-    if(n==5) showAspectGuidance();
+  // --- Step Handling ---
+  function showStep(n){ 
+    document.querySelectorAll(".step").forEach(s=>s.classList.add("hidden")); 
+    $(`step-${n}`).classList.remove("hidden"); 
+    updateProgress(); 
+    if(n==6) renderStems(); 
+    if(n==7) renderComplexityButtons(); 
+    if(n==5) showAspectGuidance(); 
   }
 
-  // Navigation
-  $("btnToStep2").onclick = ()=>{ state.topic=$("topicInput").value; state.lens=$("lensSelect").value; showStep(2); };
-  $("btnBackTo1").onclick = ()=>showStep(1);
-  $("btnToStep3").onclick = ()=>{ state.stakeholders=[ $("stake1").value,$("stake2").value,$("stake3").value,$("stake4").value].filter(Boolean); showStep(3); };
-  $("btnBackTo2").onclick = ()=>showStep(2);
-  $("btnToStep4").onclick = ()=>{ state.location=$("locationInput").value; showStep(4); };
-  $("btnBackTo3").onclick = ()=>showStep(3);
-  $("btnToStep5").onclick = ()=>{ state.timeframe=$("timeInput").value; showStep(5); };
-  $("btnBackTo4").onclick = ()=>showStep(4);
-  $("btnToStep6").onclick = ()=>{ state.aspect=$("aspectInput").value; showStep(6); };
-  $("btnBackTo5").onclick = ()=>showStep(5);
-  $("btnToStep7").onclick = ()=>{ state.draft=$("draftInput").value; showStep(7); };
-  $("btnBackTo6").onclick = ()=>showStep(6);
-  $("btnFinish").onclick = ()=>{ state.complexityNote=$("complexExplain").value; showStep(8); renderReport(); };
+  // --- Navigation ---
+  $("btnToStep2").onclick = ()=>{ 
+    state.topic=$("topicInput").value; 
+    state.lens=$("lensSelect").value; 
+    showStep(2); 
+  };
+  $("btnBackTo1").onclick = ()=>showStep(1); 
+
+  $("btnToStep3").onclick = ()=>{ 
+    state.stakeholders=[ $("stake1").value,$("stake2").value,$("stake3").value,$("stake4").value].filter(Boolean); 
+    showStep(3); 
+  };
+  $("btnBackTo2").onclick = ()=>showStep(2); 
+
+  $("btnToStep4").onclick = ()=>{ 
+    state.location=$("locationInput").value; 
+    showStep(4); 
+  };
+  $("btnBackTo3").onclick = ()=>showStep(3); 
+
+  $("btnToStep5").onclick = ()=>{ 
+    state.timeframe=$("timeInput").value; 
+    showStep(5); 
+  };
+  $("btnBackTo4").onclick = ()=>showStep(4); 
+
+  $("btnToStep6").onclick = ()=>{ 
+    state.aspect=$("aspectInput").value; 
+    showStep(6); 
+  };
+  $("btnBackTo5").onclick = ()=>showStep(5); 
+
+  $("btnToStep7").onclick = ()=>{ 
+    state.draft=$("draftInput").value; 
+    showStep(7); 
+  };
+  $("btnBackTo6").onclick = ()=>showStep(6); 
+
+  $("btnFinish").onclick = ()=>{
+    state.complexityNote=$("complexExplain").value; 
+    showStep(8); 
+    renderReport(); 
+  };
   $("btnRestart").onclick = ()=>location.reload();
   $("btnCopy").onclick = ()=>{
     navigator.clipboard.writeText(document.getElementById("reportCard").innerText);
