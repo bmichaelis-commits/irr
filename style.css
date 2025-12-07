@@ -1,9 +1,9 @@
 /* Global Variables */
 :root {
-  --bg: #f3f6fb;
+  --bg: #ffffff;
   --card: #ffffff;
   --muted: #6b7280;
-  --shadow: 0 6px 18px rgba(13, 24, 35, 0.08);
+  --shadow: 0 0px 0px rgba(13, 24, 35, 0.08);
 
   --color-topic: #9ca3af;
   --color-lens: #2dd4bf;
