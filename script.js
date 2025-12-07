@@ -1,59 +1,61 @@
 (() => {
-  // ====== Data ======
+  const state = { topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", complexityKey:"", complexityNote:"" };
+
   const GUIDANCE = {
-    Economic: `Economic Lens\nWhat industries, markets, or sectors are affected?\nExample: Climate Change → Economic costs of rising sea levels`,
-    Scientific: `Scientific Lens\nFocus on discoveries, controversies, or technologies\nExample: AI → Accuracy of facial recognition algorithms`,
-    Environmental: `Environmental Lens\nNatural processes or human activity\nExample: Water Pollution → Impact of agricultural runoff`,
-    Political: `Political Lens\nPolicy, actors, conflicts\nExample: Immigration → Effectiveness of visa policy`,
-    "Social/Cultural": `Social/Cultural Lens\nCommunity impact or underrepresented perspectives\nExample: Technology → Social media & teen mental health`,
-    Ethical: `Ethical Lens\nWho is responsible, competing rights\nExample: AI → Ethical concerns of autonomous vehicles`,
-    "Artistic/Philosophical": `Artistic/Philosophical Lens\nCreative or philosophical perspective\nExample: Street Art → Influence on public perception`
+    Economic:`Economic Lens: What industries, markets, or policies could you investigate?`,
+    Scientific:`Scientific Lens: Focus on discoveries, gaps, or controversies.`,
+    Environmental:`Environmental Lens: Impact of human activity or natural processes.`,
+    Political:`Political Lens: Policies, actors, or conflicts to examine.`,
+    "Social/Cultural":`Social/Cultural Lens: Communities affected or perspectives underrepresented.`,
+    Ethical:`Ethical Lens: Responsibilities, competing rights, or dilemmas.`,
+    "Artistic/Philosophical":`Artistic/Philosophical Lens: Works, values, or debates of meaning.`
   };
 
   const STEM_TEMPLATES = [
     `How has <span class="blank aspect">(aspect)</span> impacted <span class="blank stake">(stakeholders)</span>?`,
     `To what extent does <span class="blank aspect">(aspect)</span> affect <span class="blank stake">(stakeholders)</span> in <span class="blank loc">(location)</span>?`,
-    `How effective are responses to <span class="blank aspect">(aspect)</span> for <span class="blank stake">(stakeholders)</span> over <span class="blank time">(time frame)</span>?`,
-    `What challenges do <span class="blank stake">(stakeholders)</span> face regarding <span class="blank aspect">(aspect)</span>?`,
-    `How could changes in <span class="blank aspect">(aspect)</span> influence <span class="blank stake">(stakeholders)</span> and their environment?`
+    `How effective are responses to <span class="blank aspect">(aspect)</span> for <span class="blank stake">(stakeholders)</span> over <span class="blank time">(timeframe)</span>?`
   ];
 
   const COMPLEXITY = {
-    "trade-offs": {label:"Trade-offs", definition:"Trade-offs are situations where choosing one option requires giving up another.", example:"Example: Choosing between economic growth and environmental protection."},
-    "competing needs": {label:"Competing needs", definition:"Competing needs occur when different stakeholders require conflicting resources or priorities.", example:"Example: Balancing urban development with preserving community green spaces."},
-    "conflicting evidence": {label:"Conflicting evidence", definition:"Conflicting evidence arises when sources provide contradictory information.", example:"Example: Studies disagree on the effectiveness of a new drug."},
-    "unintended consequences": {label:"Unintended consequences", definition:"Unintended consequences are outcomes that were not predicted.", example:"Example: Plastic bag ban increased small bag usage."}
+    "trade-offs": {label:"Trade-offs", definition:"Choosing one option requires giving up another.", example:"Example: Economic growth vs environmental protection."},
+    "competing needs": {label:"Competing needs", definition:"Stakeholders require conflicting priorities.", example:"Example: Urban development vs preserving green spaces."},
+    "conflicting evidence": {label:"Conflicting evidence", definition:"Sources provide contradictory information.", example:"Example: Studies disagree on new drug efficacy."},
+    "unintended consequences": {label:"Unintended consequences", definition:"Unexpected outcomes result from an action.", example:"Example: Plastic bag ban increases small bag use."}
   };
-
-  const COLORS = {topic:"topic", lens:"lens", stakeholder:"stakeholder", location:"location", timeframe:"time", aspect:"aspect"};
-
-  const state = {topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", complexityKey:"", complexityNote:""};
 
   const $ = id => document.getElementById(id);
 
-  function updateProgress(){
-    const list = $("progressList"); list.innerHTML="";
-    function row(label,value,key){ const div=document.createElement("div"); div.className="report-box"; div.innerHTML=`<span class="blank ${key}" style="font-weight:normal;margin-right:6px"> </span> <strong>${label}:</strong> ${value||"—"}`; list.appendChild(div);}
-    row("Topic",state.topic,"topic");
-    row("Lens",state.lens,"lens");
-    row("Stakeholders",state.stakeholders.join(", "),"stakeholder");
-    row("Location",state.location,"loc");
-    row("Time frame",state.timeframe,"time");
-    row("Aspect",state.aspect,"aspect");
-    row("Complexity", state.complexityKey ? COMPLEXITY[state.complexityKey].label : "—","topic");
+  function showStep(n){
+    for(let i=1;i<=8;i++){let el=$(`step-${i}`); if(el) el.classList.add("hidden");}
+    $(`step-${n}`).classList.remove("hidden"); renderProgress();
   }
 
-  function safeGuidance(key){ return GUIDANCE[key]||"No guidance available.";}
-  function showLensGuidance(){ $("aspectGuidance").innerText=safeGuidance(state.lens); }
+  function renderProgress(){
+    const list=$("progressList"); list.innerHTML="";
+    const items=[
+      ["Topic", state.topic,"progress-topic"],
+      ["Lens", state.lens,"progress-lens"],
+      ["Stakeholders",state.stakeholders.join(", "),"progress-stake"],
+      ["Location", state.location,"progress-loc"],
+      ["Time frame", state.timeframe,"progress-time"],
+      ["Aspect", state.aspect,"progress-aspect"]
+    ];
+    items.forEach(([label,value,cls])=>{
+      const div=document.createElement("div"); div.className="progress-item";
+      div.innerHTML=`<span class="progress-swatch ${cls}"></span>${label}: ${value || "—"}`;
+      list.appendChild(div);
+    });
+  }
 
   function renderStems(){
-    const box=$("stemsBox"); box.innerHTML="<strong>Sentence-stem options</strong><br><br>";
+    const box=$("stemsBox"); box.innerHTML="";
     STEM_TEMPLATES.forEach(tpl=>{
-      const div=document.createElement("div"); div.className="stem-item"; div.innerHTML=tpl;
-      const aspectBlank=div.querySelector(".blank.aspect"); if(aspectBlank) aspectBlank.title=state.aspect||"(aspect)";
-      const stakeBlank=div.querySelector(".blank.stake"); if(stakeBlank) stakeBlank.title=state.stakeholders.join(", ")||"(stakeholders)";
-      const locBlank=div.querySelector(".blank.loc"); if(locBlank) locBlank.title=state.location||"(location)";
-      const timeBlank=div.querySelector(".blank.time"); if(timeBlank) timeBlank.title=state.timeframe||"(time frame)";
+      const div=document.createElement("div"); div.innerHTML=tpl;
+      div.querySelectorAll(".blank.aspect").forEach(b=>b.title=state.aspect||"(aspect)");
+      div.querySelectorAll(".blank.stake").forEach(b=>b.title=state.stakeholders.join(", ")||"(stakeholders)");
+      div.querySelectorAll(".blank.loc").forEach(b=>b.title=state.location||"(location)");
+      div.querySelectorAll(".blank.time").forEach(b=>b.title=state.timeframe||"(timeframe)");
       box.appendChild(div); box.appendChild(document.createElement("br"));
     });
   }
@@ -61,67 +63,71 @@
   function renderComplexityButtons(){
     const container=$("complexButtons"); container.innerHTML="";
     Object.keys(COMPLEXITY).forEach(k=>{
-      const btn=document.createElement("button"); btn.className="btn"; btn.innerText=COMPLEXITY[k].label;
+      const btn=document.createElement("button"); btn.innerText=COMPLEXITY[k].label;
       btn.onclick=()=>{
         state.complexityKey=k;
-        Array.from(container.children).forEach(c=>c.classList.remove("selected")); btn.classList.add("selected");
-        const info=$("complexInfo"); info.classList.remove("hidden"); info.innerHTML=`<strong>${COMPLEXITY[k].label}</strong><br><em>Definition:</em> ${COMPLEXITY[k].definition}<br><em>Example:</em> ${COMPLEXITY[k].example}`;
+        Array.from(container.children).forEach(c=>c.classList.remove("selected"));
+        btn.classList.add("selected");
+        const info=$("complexInfo"); info.classList.remove("hidden");
+        info.innerHTML=`<strong>${COMPLEXITY[k].label}</strong><br><em>Definition:</em> ${COMPLEXITY[k].definition}<br><em>Example:</em> ${COMPLEXITY[k].example}`;
       };
       container.appendChild(btn);
     });
   }
 
   function renderReport(){
-    $("reportDraft").innerText=state.draft||"(No draft)";
+    $("reportDraft").innerText=state.draft||"(none)";
     const comps=$("reportComponents"); comps.innerHTML="";
-    function add(title,content,key){ const div=document.createElement("div"); div.className="report-box"; div.innerHTML=`<span class="blank ${key}" style="font-weight:normal;margin-right:6px"></span><strong>${title}</strong>: ${content||"—"}`; comps.appendChild(div);}
-    add("Topic",state.topic,"topic"); add("Lens",state.lens,"lens"); add("Stakeholders",state.stakeholders.join(", "),"stakeholder");
-    add("Location",state.location,"loc"); add("Time frame",state.timeframe,"time"); add("Aspect",state.aspect,"aspect");
-    const stemsBox=$("reportStems"); stemsBox.innerHTML="";
-    if(state.complexityKey){
-      const list=COMPLEXITY[state.complexityKey];
-      stemsBox.innerHTML=`<strong>${list.label}</strong><div style="color:var(--muted)">${list.definition}</div><div style="color:var(--muted)"><em>${list.example}</em></div>`;
-    }
-    updateProgress();
+    [["Topic",state.topic],["Lens",state.lens],["Stakeholders",state.stakeholders.join(", ")],["Location",state.location],["Time frame",state.timeframe],["Aspect",state.aspect]].forEach(([label,val])=>{
+      const div=document.createElement("div"); div.innerHTML=`<strong>${label}:</strong> ${val||"—"}`;
+      comps.appendChild(div);
+    });
+    const stems=$("reportStems"); stems.innerHTML="";
+    if(state.complexityKey){ const c=COMPLEXITY[state.complexityKey]; stems.innerHTML=`<strong>${c.label}</strong><br>${c.definition}<br><em>${c.example}</em>`;}
   }
 
-  async function copyReportToClipboard(){
-    let text=`Draft:\n${state.draft||"(none)"}\n\nTopic: ${state.topic}\nLens: ${state.lens}\nStakeholders: ${state.stakeholders.join(", ")}\nLocation: ${state.location}\nTime frame: ${state.timeframe}\nAspect: ${state.aspect}\nComplexity: ${state.complexityKey ? COMPLEXITY[state.complexityKey].label : "(none)"}`;
-    await navigator.clipboard.writeText(text); alert("Report copied to clipboard!");
+  async function copyReport(){
+    let text=`Draft: ${state.draft}\nTopic: ${state.topic}\nLens: ${state.lens}\nStakeholders: ${state.stakeholders.join(", ")}\nLocation: ${state.location}\nTimeframe: ${state.timeframe}\nAspect: ${state.aspect}\nComplexity: ${state.complexityKey || "(none)"}\nNotes: ${state.complexityNote || "(none)"}`;
+    try{ await navigator.clipboard.writeText(text); alert("Report copied!"); }catch{ alert("Copy failed."); }
   }
 
-  // ====== Navigation ======
-  function showStep(n){
-    document.querySelectorAll(".step").forEach(s=>s.classList.add("hidden"));
-    $(`step-${n}`).classList.remove("hidden");
-    updateProgress();
+  function wireUI(){
+    $("btnToStep2").onclick=()=>{
+      const t=$("topicInput").value.trim(); const l=$("lensSelect").value;
+      if(!t||!l){alert("Enter topic and lens."); return;}
+      state.topic=t; state.lens=l; $("aspectGuidance").innerText=GUIDANCE[l]; showStep(2);
+    };
+    $("btnBackTo1").onclick=()=>showStep(1);
+    $("btnToStep3").onclick=()=>{
+      const s=[ $("stake1").value.trim(), $("stake2").value.trim(), $("stake3").value.trim(), $("stake4").value.trim() ].filter(Boolean);
+      if(!s.length){alert("Enter at least one stakeholder."); return;}
+      state.stakeholders=s; showStep(3);
+    };
+    $("btnBackTo2").onclick=()=>showStep(2);
+    $("btnToStep4").onclick=()=>{
+      const loc=$("locationInput").value.trim(); if(!loc){alert("Enter location."); return;} state.location=loc; showStep(4);
+    };
+    $("btnBackTo3").onclick=()=>showStep(3);
+    $("btnToStep5").onclick=()=>{
+      const tf=$("timeInput").value.trim(); if(!tf){alert("Enter time frame."); return;} state.timeframe=tf; showStep(5);
+    };
+    $("btnBackTo4").onclick=()=>showStep(4);
+    $("btnToStep6").onclick=()=>{
+      const a=$("aspectInput").value.trim(); if(!a){alert("Enter aspect."); return;} state.aspect=a; renderStems(); showStep(6);
+    };
+    $("btnBackTo5").onclick=()=>showStep(5);
+    $("btnToStep7").onclick=()=>{
+      const d=$("draftInput").value.trim(); if(!d){alert("Enter draft."); return;} state.draft=d; renderComplexityButtons(); showStep(7);
+    };
+    $("btnBackTo6").onclick=()=>showStep(6);
+    $("btnFinish").onclick=()=>{
+      state.complexityNote=$("complexExplain").value.trim(); if(!state.complexityKey){alert("Select complexity."); return;}
+      renderReport(); showStep(8);
+    };
+    $("btnRestart").onclick=()=>location.reload();
+    $("btnCopy").onclick=copyReport;
   }
 
-  // ====== Event listeners ======
-  $("btnToStep2").onclick=()=>{
-    state.topic=$("topicInput").value.trim();
-    state.lens=$("lensSelect").value;
-    showStep(2); showLensGuidance();
-  };
-  $("btnBackTo1").onclick=()=>showStep(1);
-  $("btnToStep3").onclick=()=>{
-    state.stakeholders=[ $("stake1").value,$("stake2").value,$("stake3").value,$("stake4").value].filter(s=>s);
-    showStep(3);
-  };
-  $("btnBackTo2").onclick=()=>showStep(2);
-  $("btnToStep4").onclick(){ state.location=$("locationInput").value.trim(); showStep(4);}
-  $("btnBackTo3").onclick=()=>showStep(3);
-  $("btnToStep5").onclick(){ state.timeframe=$("timeInput").value.trim(); showStep(5);}
-  $("btnBackTo4").onclick=()=>showStep(4);
-  $("btnToStep6").onclick=()=>{ state.aspect=$("aspectInput").value.trim(); showStep(6); renderStems();}
-  $("btnBackTo5").onclick=()=>showStep(5);
-  $("btnToStep7").onclick=()=>{ state.draft=$("draftInput").value.trim(); showStep(7); renderComplexityButtons();}
-  $("btnBackTo6").onclick=()=>showStep(6);
-  $("btnFinish").onclick=()=>{ state.complexNote=$("complexExplain").value.trim(); showStep(8); renderReport();}
-  $("btnRestart").onclick=()=>location.reload();
-  $("btnCopy").onclick=()=>copyReportToClipboard();
-
-  // Init
-  showStep(1);
+  document.addEventListener("DOMContentLoaded",()=>{ wireUI(); showStep(1); renderProgress(); });
 
 })();
