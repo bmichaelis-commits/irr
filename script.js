@@ -14,9 +14,7 @@
     `How has <span class="blank aspect">(aspect)</span> impacted <span class="blank stake">(stakeholders)</span>?`,
     `To what extent does <span class="blank aspect">(aspect)</span> affect <span class="blank stake">(stakeholders)</span> in <span class="blank loc">(location)</span>?`,
     `How effective are responses to <span class="blank aspect">(aspect)</span> for <span class="blank stake">(stakeholders)</span> over <span class="blank time">(time frame)</span>?`,
-    `What challenges do <span class="blank stake">(stakeholders)</span> face regarding <span class="blank aspect">(aspect)</span>?`,
-    `How could changes in <span class="blank aspect">(aspect)</span> influence <span class="blank stake">(stakeholders)</span> and their environment?`,
-    `How could (policy or action) address <span class="blank aspect">(aspect)</span> for <span class="blank stake">(stakeholders)</span>?`
+    `How could changes in <span class="blank aspect">(aspect)</span> influence <span class="blank stake">(stakeholders)</span> in <location>?`
   ];
 
   const COMPLEXITY = {
@@ -41,10 +39,10 @@
     complexity: "blank aspect" // reusing aspect style, can customize if needed
   };
 
-  const state = { 
-    topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", 
-    complexityKey:"", complexityNote:"" 
-  };
+ // const state = { 
+//    topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", 
+//    complexityKey:"", complexityNote:"" 
+//  };
 
   const $ = id => document.getElementById(id);
 
@@ -65,7 +63,7 @@
     row("Location", state.location, COLORS.location);
     row("Time frame", state.timeframe, COLORS.timeframe);
     row("Aspect", state.aspect, COLORS.aspect);
-    row("Complexity", state.complexityKey, COLORS.complexity);
+    row("Complexity", state.complexity, COLORS.complexity);
   }
 
   // --- Sentence Stems ---
