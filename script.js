@@ -1,55 +1,89 @@
-:root{
-  --bg: #f3f6fb;
-  --card: #ffffff;
-  --muted: #6b7280;
-  --accent: #0ea5a4;
-  --shadow: 0 6px 18px rgba(13,24,35,0.08);
+(() => {
+  // ====== Data ======
+  const GUIDANCE = {
+    Economic: `Economic Lens\nWhat industries, markets, or sectors are affected?\nExample: Climate Change → Economic costs of rising sea levels`,
+    Scientific: `Scientific Lens\nFocus on discoveries, controversies, or technologies\nExample: AI → Accuracy of facial recognition algorithms`,
+    Environmental: `Environmental Lens\nNatural processes or human activity\nExample: Water Pollution → Impact of agricultural runoff`,
+    Political: `Political Lens\nPolicy, actors, conflicts\nExample: Immigration → Effectiveness of visa policy`,
+    "Social/Cultural": `Social/Cultural Lens\nCommunity impact or underrepresented perspectives\nExample: Technology → Social media & teen mental health`,
+    Ethical: `Ethical Lens\nWho is responsible, competing rights\nExample: AI → Ethical concerns of autonomous vehicles`,
+    "Artistic/Philosophical": `Artistic/Philosophical Lens\nCreative or philosophical perspective\nExample: Street Art → Influence on public perception`
+  };
 
-  --color-topic: #6b7280;
-  --color-lens: #14B8A6;
-  --color-stakeholder: #3B82F6;
-  --color-location: #22C55E;
-  --color-timeframe: #F97316;
-  --color-aspect: #A855F7;
-  --color-blank-bg: #fff7ed;
-}
+  const STEM_TEMPLATES = [
+    `How has <span class="blank aspect">(aspect)</span> impacted <span class="blank stake">(stakeholders)</span>?`,
+    `To what extent does <span class="blank aspect">(aspect)</span> affect <span class="blank stake">(stakeholders)</span> in <span class="blank loc">(location)</span>?`,
+    `How effective are responses to <span class="blank aspect">(aspect)</span> for <span class="blank stake">(stakeholders)</span> over <span class="blank time">(time frame)</span>?`,
+    `What challenges do <span class="blank stake">(stakeholders)</span> face regarding <span class="blank aspect">(aspect)</span>?`,
+    `How could changes in <span class="blank aspect">(aspect)</span> influence <span class="blank stake">(stakeholders)</span> and their environment?`
+  ];
 
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;background:var(--bg);font-family:Helvetica,Inter,system-ui,sans-serif;color:#0f172a}
-.container{display:flex;gap:20px;max-width:1100px;margin:24px auto;padding:0;width:100%}
-.wizard-column, .progress-column{flex:1}
-.progress-column{max-width:300px}
+  const COMPLEXITY = {
+    "trade-offs": {label:"Trade-offs", definition:"Trade-offs are situations where choosing one option requires giving up another.", example:"Example: Choosing between economic growth and environmental protection."},
+    "competing needs": {label:"Competing needs", definition:"Competing needs occur when different stakeholders require conflicting resources or priorities.", example:"Example: Balancing urban development with preserving community green spaces."},
+    "conflicting evidence": {label:"Conflicting evidence", definition:"Conflicting evidence arises when sources provide contradictory information.", example:"Example: Studies disagree on the effectiveness of a new drug."},
+    "unintended consequences": {label:"Unintended consequences", definition:"Unintended consequences are outcomes that were not predicted.", example:"Example: Plastic bag ban increased small bag usage."}
+  };
 
-.input, .textarea{
-  width:100%;padding:10px 12px;border:1px solid #e6eef6;background:#fff;font-size:14px;color:var(--muted);
-}
-.textarea{min-height:88px;resize:vertical}
+  const COLORS = {topic:"topic", lens:"lens", stakeholder:"stakeholder", location:"location", timeframe:"time", aspect:"aspect"};
 
-.controls{margin-top:12px;display:flex;gap:8px;justify-content:flex-end}
-.btn{background:#eef2ff;border:none;padding:8px 12px;border-radius:0;cursor:pointer;color:#0f172a}
-.btn.primary{background:linear-gradient(90deg,#4f46e5,#06b6d4);color:#fff}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  const state = {topic:"", lens:"", stakeholders:[], location:"", timeframe:"", aspect:"", draft:"", complexityKey:"", complexityNote:""};
 
-.guidance-card{background:#fff;padding:12px;border:1px solid #edf2ff;color:var(--muted);font-size:14px}
-.stems-card{background:#fff;padding:10px;border:1px dashed #e6eef6;font-size:14px}
-.report-card{background:#fff;padding:12px;border:1px solid #e6eef6}
-.report-text{background:#f8fafc;padding:10px;border:1px solid #e6eef6;min-height:48px;color:var(--muted)}
-.components-grid{display:grid;gap:8px;margin-top:6px}
-.progress-list{display:flex;flex-direction:column;gap:8px}
-.report-box{padding:4px;border:1px solid #eef2ff}
+  const $ = id => document.getElementById(id);
 
-.blank {display:inline-block;padding:2px 6px;border-radius:0;background:var(--color-blank-bg);font-weight:600}
-.blank.stake {background: rgba(59,130,246,0.12); color:var(--color-stakeholder); border:1px solid rgba(59,130,246,0.16)}
-.blank.loc {background: rgba(34,197,94,0.12); color:var(--color-location); border:1px solid rgba(34,197,94,0.16)}
-.blank.time {background: rgba(249,115,22,0.08); color:var(--color-timeframe); border:1px solid rgba(249,115,22,0.12)}
-.blank.aspect{background: rgba(168,85,247,0.08); color:var(--color-aspect); border:1px solid rgba(168,85,247,0.12)}
-.blank.topic {background: rgba(107,114,128,0.06); color:var(--color-topic); border:1px solid rgba(107,114,128,0.08)}
-.blank.lens  {background: rgba(20,184,166,0.06); color:var(--color-lens); border:1px solid rgba(20,184,166,0.08)}
+  function updateProgress(){
+    const list = $("progressList"); list.innerHTML="";
+    function row(label,value,key){ const div=document.createElement("div"); div.className="report-box"; div.innerHTML=`<span class="blank ${key}" style="font-weight:normal;margin-right:6px"> </span> <strong>${label}:</strong> ${value||"—"}`; list.appendChild(div);}
+    row("Topic",state.topic,"topic");
+    row("Lens",state.lens,"lens");
+    row("Stakeholders",state.stakeholders.join(", "),"stakeholder");
+    row("Location",state.location,"loc");
+    row("Time frame",state.timeframe,"time");
+    row("Aspect",state.aspect,"aspect");
+    row("Complexity", state.complexityKey ? COMPLEXITY[state.complexityKey].label : "—","topic");
+  }
 
-.muted{color:var(--muted)}
-.hidden{display:none}
+  function safeGuidance(key){ return GUIDANCE[key]||"No guidance available.";}
+  function showLensGuidance(){ $("aspectGuidance").innerText=safeGuidance(state.lens); }
 
-@media(max-width:980px){
-  .container{flex-direction:column}
-  .progress-column{max-width:none}
-}
+  function renderStems(){
+    const box=$("stemsBox"); box.innerHTML="<strong>Sentence-stem options</strong><br><br>";
+    STEM_TEMPLATES.forEach(tpl=>{
+      const div=document.createElement("div"); div.className="stem-item"; div.innerHTML=tpl;
+      const aspectBlank=div.querySelector(".blank.aspect"); if(aspectBlank) aspectBlank.title=state.aspect||"(aspect)";
+      const stakeBlank=div.querySelector(".blank.stake"); if(stakeBlank) stakeBlank.title=state.stakeholders.join(", ")||"(stakeholders)";
+      const locBlank=div.querySelector(".blank.loc"); if(locBlank) locBlank.title=state.location||"(location)";
+      const timeBlank=div.querySelector(".blank.time"); if(timeBlank) timeBlank.title=state.timeframe||"(time frame)";
+      box.appendChild(div); box.appendChild(document.createElement("br"));
+    });
+  }
+
+  function renderComplexityButtons(){
+    const container=$("complexButtons"); container.innerHTML="";
+    Object.keys(COMPLEXITY).forEach(k=>{
+      const btn=document.createElement("button"); btn.className="btn"; btn.innerText=COMPLEXITY[k].label;
+      btn.onclick=()=>{
+        state.complexityKey=k;
+        Array.from(container.children).forEach(c=>c.classList.remove("selected")); btn.classList.add("selected");
+        const info=$("complexInfo"); info.classList.remove("hidden"); info.innerHTML=`<strong>${COMPLEXITY[k].label}</strong><br><em>Definition:</em> ${COMPLEXITY[k].definition}<br><em>Example:</em> ${COMPLEXITY[k].example}`;
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  function renderReport(){
+    $("reportDraft").innerText=state.draft||"(No draft)";
+    const comps=$("reportComponents"); comps.innerHTML="";
+    function add(title,content,key){ const div=document.createElement("div"); div.className="report-box"; div.innerHTML=`<span class="blank ${key}" style="font-weight:normal;margin-right:6px"></span><strong>${title}</strong>: ${content||"—"}`; comps.appendChild(div);}
+    add("Topic",state.topic,"topic"); add("Lens",state.lens,"lens"); add("Stakeholders",state.stakeholders.join(", "),"stakeholder");
+    add("Location",state.location,"loc"); add("Time frame",state.timeframe,"time"); add("Aspect",state.aspect,"aspect");
+    const stemsBox=$("reportStems"); stemsBox.innerHTML="";
+    if(state.complexityKey){
+      const list=COMPLEXITY[state.complexityKey];
+      stemsBox.innerHTML=`<strong>${list.label}</strong><div style="color:var(--muted)">${list.definition}</div><div style="color:var(--muted)"><em>${list.example}</em></div>`;
+    }
+    updateProgress();
+  }
+
+  async function copyReportToClipboard(){
+    let text=`Draft:\n${state.draft||"(none)"}\n\nTopic: ${state.topic}\nLens: ${state.lens}\nStakeholders: ${state.stakeholders.join(", ")}\nLocation: ${state.location}\nTime frame: ${state.timeframe}\nAspect: ${state.aspect}\nComplex
